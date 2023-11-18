@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "433588873548",
+    "firebase_url": "https://shoppinglist-5fefe-default-rtdb.firebaseio.com",
+    "project_id": "shoppinglist-5fefe",
+    "storage_bucket": "shoppinglist-5fefe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433588873548:android:ae8dfd71b3a1446ffb47e9",
+        "android_client_info": {
+          "package_name": "edu.uga.cs.shoppinglist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJR7cghIEEs8mEBHgLfgyxv_nQRgtDdWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

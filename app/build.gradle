@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'edu.uga.cs.shoppinglist'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "edu.uga.cs.shoppinglist"

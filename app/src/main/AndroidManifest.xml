@@ -15,6 +15,15 @@
         android:theme="@style/Theme.ShoppingList"
         tools:targetApi="31">
         <activity
+            android:name=".RecentPurchases"
+            android:exported="false" />
+        <activity
+            android:name=".SettleCost"
+            android:exported="false" />
+        <activity
+            android:name=".ShoppingList"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity

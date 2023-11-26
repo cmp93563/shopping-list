@@ -71,9 +71,9 @@ public class SplashPage extends AppCompatActivity {
         if (menuItem.getItemId() == R.id.menu_list) {
             fragment = new ShoppingListFragment();
         } else if (menuItem.getItemId() == R.id.menu_purchased) {
-            fragment = new ShoppingListFragment();
+            fragment = new RecentPurchasesFragment();
         } else if (menuItem.getItemId() == R.id.menu_settle) {
-            fragment = new ShoppingListFragment();
+            fragment = new SettleCostFragment();
         } else if (menuItem.getItemId() == R.id.menu_close) {
             fragment = new ShoppingListFragment();
         } else return;

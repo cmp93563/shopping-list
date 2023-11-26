@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -70,32 +69,24 @@ public class SplashPage extends AppCompatActivity {
         // Create a new fragment based on the used selection in the nav drawer
 //        switch( menuItem.getItemId() ) {
         if (menuItem.getItemId() == R.id.menu_list) {
-            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
-            startActivity(intent);
+            fragment = new ShoppingListFragment();
         } else if (menuItem.getItemId() == R.id.menu_purchased) {
-            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
-            startActivity(intent);
+            fragment = new ShoppingListFragment();
         } else if (menuItem.getItemId() == R.id.menu_settle) {
-            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
-            startActivity(intent);
+            fragment = new ShoppingListFragment();
         } else if (menuItem.getItemId() == R.id.menu_close) {
-            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
-            startActivity(intent);
+            fragment = new ShoppingListFragment();
         } else return;
-//        }
-
         // Set up the fragment by replacing any existing fragment in the main activity
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().
+        fragmentManager.beginTransaction().replace( R.id.fragmentContainerView, fragment).addToBackStack("main screen" ).commit();
 
-                replace(R.id.fragmentContainerView, fragment).
-
-                addToBackStack("main screen").
-
-                commit();
+        menuItem.setChecked( true );
+        setTitle( menuItem.getTitle());
 
         // Close the navigation drawer
         drawerLayout.closeDrawers();
+
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {

@@ -1,84 +1,219 @@
 package edu.uga.cs.shoppinglist;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is an adapter class for the RecyclerView to show all items.
+ * This is an adapter class for the RecyclerView to show all job leads.
  */
-public class ShoppingListRecyclerAdapter extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.ListItemHolder> {
 
-    public static final String DEBUG_TAG = "ShoppingListRecyclerAdapter";
+public class ShoppingListRecyclerAdapter
+        extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.JobLeadHolder>
+        implements Filterable {
 
-    private List<ListItem> itemsList;
-    private Context context;
+    public static final String DEBUG_TAG = "JobLeadRecyclerAdapter";
 
-    public ShoppingListRecyclerAdapter( List<ListItem> itemList, Context context ) {
-        this.itemsList = itemList;
+    private final Context context;
+
+    private List<ListItem> values;
+    private List<ListItem> originalValues;
+
+    public ShoppingListRecyclerAdapter( Context context, List<ListItem> jobLeadList ) {
         this.context = context;
+        this.values = jobLeadList;
+        this.originalValues = new ArrayList<ListItem>( jobLeadList );
+    }
+
+    // reset the originalValues to the current contents of values
+    public void sync()
+    {
+        originalValues = new ArrayList<ListItem>( values );
     }
 
     // The adapter must have a ViewHolder class to "hold" one item to show.
-    class ListItemHolder extends RecyclerView.ViewHolder {
+    public static class JobLeadHolder extends RecyclerView.ViewHolder {
 
-        TextView item;
-        TextView price;
-        TextView purchased;
+        TextView companyName;
+        TextView phone;
+        TextView url;
+        TextView comments;
 
-        public ListItemHolder(View itemView ) {
-            super(itemView);
+        public JobLeadHolder( View itemView ) {
+            super( itemView );
 
-            item = itemView.findViewById( R.id.itemName );
+            companyName = itemView.findViewById( R.id.itemName );
         }
     }
 
     @NonNull
     @Override
-    public ListItemHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
+    public JobLeadHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
+        // We need to make sure that all CardViews have the same, full width, allowed by the parent view.
+        // This is a bit tricky, and we must provide the parent reference (the second param of inflate)
+        // and false as the third parameter (don't attach to root).
+        // Consequently, the parent view's (the RecyclerView) width will be used (match_parent).
         View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
-        return new ListItemHolder( view );
+        return new JobLeadHolder( view );
     }
 
-    // This method fills in the values of the Views to show an item
+    // This method fills in the values of a holder to show a JobLead.
+    // The position parameter indicates the position on the list of jobs list.
     @Override
-    public void onBindViewHolder( ListItemHolder holder, int position ) {
-        ListItem listItem = itemsList.get( position );
+    public void onBindViewHolder( JobLeadHolder holder, int position ) {
+
+        ListItem listItem = values.get( position );
 
         Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem );
 
-        String item = listItem.getItem();
-
-        holder.item.setText( listItem.getItem());
-
-        // We can attach an OnClickListener to the itemView of the holder;
-        // itemView is a public field in the Holder class.
-        // It will be called when the user taps/clicks on the whole item, i.e., one of
-        // the job leads shown.
-        // This will indicate that the user wishes to edit (modify or delete) this item.
-        // We create and show an EditItemDialogFragment.
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
-                //Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-//                EditItemDialogFragment editJobFragment =
-//                        EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, company, phone, url, comments );
-//                editJobFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
-            }
-        });
+        holder.companyName.setText( listItem.getItem());
     }
 
     @Override
     public int getItemCount() {
-        return itemsList.size();
+        if( values != null )
+            return values.size();
+        else
+            return 0;
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<ListItem> list = new ArrayList<ListItem>( originalValues );
+                FilterResults filterResults = new FilterResults();
+                if(constraint == null || constraint.length() == 0) {
+                    filterResults.count = list.size();
+                    filterResults.values = list;
+                }
+                else{
+                    List<ListItem> resultsModel = new ArrayList<>();
+                    String searchStr = constraint.toString().toLowerCase();
+
+                    for( ListItem jobLead : list ) {
+                        // check if either the company name or the comments contain the search string
+                        if( jobLead.getItem().toLowerCase().contains( searchStr )) {
+                            resultsModel.add( jobLead );
+                        }
+/*
+                        // this may be a faster approach with a long list of items to search
+                        if( jobLead.getCompanyName().regionMatches( true, i, searchStr, 0, length ) )
+                            return true;
+
+ */
+                    }
+
+                    filterResults.count = resultsModel.size();
+                    filterResults.values = resultsModel;
+                }
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                values = (ArrayList<ListItem>) results.values;
+                notifyDataSetChanged();
+                if( values.size() == 0 ) {
+                    Toast.makeText( context, "Not Found", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        };
+        return filter;
     }
 }
+
+
+//package edu.uga.cs.shoppinglist;
+//
+//import android.content.Context;
+//import android.util.Log;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup;
+//import android.widget.TextView;
+//
+//import androidx.annotation.NonNull;
+//import androidx.recyclerview.widget.RecyclerView;
+//
+//import java.util.List;
+//
+///**
+// * This is an adapter class for the RecyclerView to show all items.
+// */
+//public class ShoppingListRecyclerAdapter extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.ListItemHolder> {
+//
+//    public static final String DEBUG_TAG = "ShoppingListRecyclerAdapter";
+//
+//    private List<ListItem> itemsList;
+//    private Context context;
+//
+//    public ShoppingListRecyclerAdapter( List<ListItem> itemList, Context context ) {
+//        this.itemsList = itemList;
+//        this.context = context;
+//    }
+//
+//    // The adapter must have a ViewHolder class to "hold" one item to show.
+//    class ListItemHolder extends RecyclerView.ViewHolder {
+//
+//        TextView item;
+//        TextView price;
+//        TextView purchased;
+//
+//        public ListItemHolder(View itemView ) {
+//            super(itemView);
+//
+//            item = itemView.findViewById( R.id.itemName );
+//        }
+//    }
+//
+//    @NonNull
+//    @Override
+//    public ListItemHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
+//        View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
+//        return new ListItemHolder( view );
+//    }
+//
+//    // This method fills in the values of the Views to show an item
+//    @Override
+//    public void onBindViewHolder( ListItemHolder holder, int position ) {
+//        ListItem listItem = itemsList.get( position );
+//
+//        Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem );
+//
+//        String item = listItem.getItem();
+//
+//        holder.item.setText( listItem.getItem());
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
+//                //Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
+////                EditItemDialogFragment editJobFragment =
+////                        EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, company, phone, url, comments );
+////                editJobFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public int getItemCount() {
+//        return itemsList.size();
+//    }
+//}

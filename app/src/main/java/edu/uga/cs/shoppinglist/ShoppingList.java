@@ -3,6 +3,7 @@ package edu.uga.cs.shoppinglist;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -14,16 +15,23 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingList extends AppCompatActivity {
+public class ShoppingList
+        extends AppCompatActivity
+        implements AddItemDialogFragment.AddListItemDialogListener {
+//        EditJobLeadDialogFragment.EditJobLeadDialogListener {
 
 
     private RecyclerView recyclerView;
-//    private ShoppingListRecyclerAdapter recyclerAdapter;
+    private ShoppingListRecyclerAdapter recyclerAdapter;
 
     private List<ListItem> itemsList;
 
@@ -43,6 +51,48 @@ public class ShoppingList extends AppCompatActivity {
                 newFragment.show(getSupportFragmentManager(), null);
             }
         });
+
+        // initialize the Job Lead list
+        itemsList = new ArrayList<>();
+
+        // use a linear layout manager for the recycler view
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        // the recycler adapter with job leads is empty at first; it will be updated later
+        recyclerAdapter = new ShoppingListRecyclerAdapter( itemsList, ShoppingList.this );
+        recyclerView.setAdapter( recyclerAdapter );
+
+        // get a Firebase DB instance reference
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("ShoppingList");
+
+        // Set up a listener (event handler) to receive a value for the database reference.
+        // This type of listener is called by Firebase once by immediately executing its onDataChange method
+        // and then each time the value at Firebase changes.
+        //
+        // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
+        // to maintain job leads.
+        myRef.addValueEventListener( new ValueEventListener() {
+
+            @Override
+            public void onDataChange( @NonNull DataSnapshot snapshot ) {
+                // Once we have a DataSnapshot object, we need to iterate over the elements and place them on our job lead list.
+                itemsList.clear(); // clear the current content; this is inefficient!
+                for( DataSnapshot postSnapshot: snapshot.getChildren() ) {
+                    ListItem jobLead = postSnapshot.getValue(ListItem.class);
+                    jobLead.setKey( postSnapshot.getKey() );
+                    itemsList.add( jobLead );
+                }
+
+                recyclerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled( @NonNull DatabaseError databaseError ) {
+                System.out.println( "ValueEventListener: reading failed: " + databaseError.getMessage() );
+            }
+        } );
     }
 
     public void addListItem(ListItem listItem) {

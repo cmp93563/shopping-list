@@ -5,6 +5,7 @@ package edu.uga.cs.shoppinglist;
  */
 public class ListItem {
 
+    private String key;
     private String item;
     private double price;
     private boolean purchased;
@@ -38,6 +39,12 @@ public class ListItem {
         return purchased;
     }
 
+    public String getKey() {
+        return key;
+    }
+    public void setKey(String key) {
+        this.key = key;
+    }
     public void setItem() {
         this.item = item;
     }

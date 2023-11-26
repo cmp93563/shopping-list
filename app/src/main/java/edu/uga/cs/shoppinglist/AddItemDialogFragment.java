@@ -24,7 +24,7 @@ public class AddItemDialogFragment extends DialogFragment {
     // This interface will be used to obtain the new job lead from an AlertDialog.
     // A class implementing this interface will handle the new job lead, i.e. store it
     // in Firebase and add it to the RecyclerAdapter.
-    public interface AddJobLeadDialogListener {
+    public interface AddListItemDialogListener {
         void addListItem(ListItem listItem);
     }
 
@@ -45,7 +45,7 @@ public class AddItemDialogFragment extends DialogFragment {
         builder.setView(layout);
 
         // Set the title of the AlertDialog
-        builder.setTitle( "New Job Lead" );
+        builder.setTitle( "New Item" );
         // Provide the negative button listener
         builder.setNegativeButton( android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -55,13 +55,13 @@ public class AddItemDialogFragment extends DialogFragment {
             }
         });
         // Provide the positive button listener
-        builder.setPositiveButton( android.R.string.ok, new AddJobLeadListener() );
+        builder.setPositiveButton( android.R.string.ok, new AddListItemListener() );
 
         // Create the AlertDialog and show it
         return builder.create();
     }
 
-    private class AddJobLeadListener implements DialogInterface.OnClickListener {
+    private class AddListItemListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             // get the new job lead data from the user
@@ -71,7 +71,7 @@ public class AddItemDialogFragment extends DialogFragment {
             ListItem listItem = new ListItem( itemName );
 
             // get the Activity's listener to add the new job lead
-            AddJobLeadDialogListener listener = (AddJobLeadDialogListener) getActivity();
+            AddListItemDialogListener listener = (AddListItemDialogListener) getActivity();
 
             // add the new job lead
             listener.addListItem( listItem );

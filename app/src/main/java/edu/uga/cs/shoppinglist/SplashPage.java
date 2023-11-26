@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,8 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class SplashPage
-        extends AppCompatActivity {
+public class SplashPage extends AppCompatActivity {
 
 
     public static final String TAG = "ShoppingList";
@@ -40,50 +41,58 @@ public class SplashPage
 
 
         // assigning ID of the toolbar to a variable
-        toolbar = findViewById( R.id.toolbar );
+        toolbar = findViewById(R.id.toolbar);
 
         // using toolbar as ActionBar
-        setSupportActionBar( toolbar );
+        setSupportActionBar(toolbar);
 
         // Find our drawer view
-        drawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
 
-        drawerToggle.setDrawerIndicatorEnabled( true );
+        drawerToggle.setDrawerIndicatorEnabled(true);
         drawerToggle.syncState();
 
         // Connect DrawerLayout events to the ActionBarToggle
-        drawerLayout.addDrawerListener( drawerToggle );
+        drawerLayout.addDrawerListener(drawerToggle);
 
         // Find the drawer view
-        navigationView = findViewById( R.id.nvView );
-        navigationView.setNavigationItemSelectedListener(
-                menuItem -> {
-                    selectDrawerItem( menuItem );
-                    return true;
-                });
+        navigationView = findViewById(R.id.nvView);
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            selectDrawerItem(menuItem);
+            return true;
+        });
     }
 
-    public void selectDrawerItem( MenuItem menuItem ) {
+    public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
-//        fragment = new ShoppingListFragment();
 
         // Create a new fragment based on the used selection in the nav drawer
 //        switch( menuItem.getItemId() ) {
-            if(menuItem.getItemId() == R.id.menu_list)
-                fragment = new ShoppingListFragment();
-            else if (menuItem.getItemId() == R.id.menu_purchased)
-                fragment = new ShoppingListFragment();
-            else if (menuItem.getItemId() == R.id.menu_settle)
-                fragment = new ShoppingListFragment();
-            else if (menuItem.getItemId() ==  R.id.menu_close)
-                finish();
-            else return;
+        if (menuItem.getItemId() == R.id.menu_list) {
+            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
+            startActivity(intent);
+        } else if (menuItem.getItemId() == R.id.menu_purchased) {
+            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
+            startActivity(intent);
+        } else if (menuItem.getItemId() == R.id.menu_settle) {
+            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
+            startActivity(intent);
+        } else if (menuItem.getItemId() == R.id.menu_close) {
+            Intent intent = new Intent(getApplicationContext(), ShoppingList.class);
+            startActivity(intent);
+        } else return;
 //        }
 
         // Set up the fragment by replacing any existing fragment in the main activity
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace( R.id.fragmentContainerView, fragment).addToBackStack("main screen" ).commit();
+        fragmentManager.beginTransaction().
+
+                replace(R.id.fragmentContainerView, fragment).
+
+                addToBackStack("main screen").
+
+                commit();
 
         // Close the navigation drawer
         drawerLayout.closeDrawers();
@@ -92,6 +101,6 @@ public class SplashPage
     private ActionBarDrawerToggle setupDrawerToggle() {
         // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
         // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,  R.string.drawer_close );
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 }

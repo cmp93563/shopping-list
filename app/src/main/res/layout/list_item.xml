@@ -10,25 +10,84 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        app:cardBackgroundColor="#e6e6e6"
+        android:layout_marginBottom="20dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="8dp"
         app:cardElevation="3dp"
         app:cardMaxElevation="3dp"
-        app:contentPadding="25dp">
+        app:contentPadding="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/itemName"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/itemName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="item_name"
+                    android:textColor="#000000"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="62dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#EA97E2"
+                    android:paddingLeft="2dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="2dp"
+                    android:paddingBottom="0dp"
+                    android:text="Edit"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#FFFFFF"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/delete_btn" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#EA97E2"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="0dp"
+                    android:text="Add to Cart"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
         </LinearLayout>
 

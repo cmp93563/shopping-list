@@ -100,11 +100,11 @@ public class ShoppingListFragment extends Fragment
                 .child( "ShoppingList" )
                 .child( listItem.getKey() );
 
-        DatabaseReference purchaseRef = database
-                .getReference()
-                .child( "PurchasedList" )
-                .child( listItem.getKey() );
-        if( action == EditItemDialogFragment.SAVE && listItem.getPrice() == -1) {
+//        DatabaseReference purchaseRef = database
+//                .getReference()
+//                .child( "Cart" )
+//                .child( listItem.getKey() );
+        if( action == EditItemDialogFragment.SAVE && !listItem.getInCart()) {
             Log.d( DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")" );
 
             // Update the recycler view to show the changes in the updated item in that view
@@ -129,12 +129,10 @@ public class ShoppingListFragment extends Fragment
                             Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if( action == EditItemDialogFragment.SAVE && listItem.getPrice() > -1) {
-            Log.d( DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")" );
-
+        } else if( action == EditItemDialogFragment.SAVE && listItem.getInCart()) {
             // Update the recycler view to show the changes in the updated item in that view
             recyclerAdapter.notifyItemChanged( position );
-            purchaseRef.addListenerForSingleValueEvent( new ValueEventListener() {
+            shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().setValue( listItem ).addOnSuccessListener( new OnSuccessListener<Void>() {
@@ -154,34 +152,58 @@ public class ShoppingListFragment extends Fragment
                             Toast.LENGTH_SHORT).show();
                 }
             });
-            Log.d( DEBUG_TAG, "Moving item at: " + position + "(" + listItem.getItem() + ") to purchased" );
-
-            // remove the deleted item from the list (internal list in the App)
-            itemsList.remove( position );
-
-            // Update the recycler view to remove the deleted item from that view
-            recyclerAdapter.notifyItemRemoved( position );
-            shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
-                @Override
-                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ") from shopping list." );
-                            Toast.makeText(getActivity(), "added " + listItem.getItem() + " to cart",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
-                    Log.d( DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ") from shopping list" );
-                    Toast.makeText(getActivity(), "Failed to add " + listItem.getItem() + " to cart",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+//            Log.d( DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")" );
+//
+//            // Update the recycler view to show the changes in the updated item in that view
+////            recyclerAdapter.notifyItemChanged( position );
+//            purchaseRef.addListenerForSingleValueEvent( new ValueEventListener() {
+//                @Override
+//                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
+//                    dataSnapshot.getRef().setValue( listItem ).addOnSuccessListener( new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d( DEBUG_TAG, "updated item at: " + position + "(" + listItem.getItem() + ")" );
+//                            Toast.makeText(getActivity(), listItem.getItem() + " updated",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void onCancelled( @NonNull DatabaseError databaseError ) {
+//                    Log.d( DEBUG_TAG, "failed to update item at: " + position + "(" + listItem.getItem() + ")" );
+//                    Toast.makeText(getActivity(), "Failed to update " + listItem.getItem(),
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//            Log.d( DEBUG_TAG, "Moving item at: " + position + "(" + listItem.getItem() + ") to purchased" );
+//
+//            // remove the deleted item from the list (internal list in the App)
+//            itemsList.remove( position );
+//
+//            // Update the recycler view to remove the deleted item from that view
+//            recyclerAdapter.notifyItemRemoved( position );
+//            shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
+//                @Override
+//                public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
+//                    dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d( DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ") from shopping list." );
+//                            Toast.makeText(getActivity(), "added " + listItem.getItem() + " to cart",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void onCancelled( @NonNull DatabaseError databaseError ) {
+//                    Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
+//                    Log.d( DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ") from shopping list" );
+//                    Toast.makeText(getActivity(), "Failed to add " + listItem.getItem() + " to cart",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            });
         } else if ( action == EditItemDialogFragment.DELETE ) {
             Log.d( DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")" );
             try {

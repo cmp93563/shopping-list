@@ -9,27 +9,34 @@ public class ListItem {
     private String item;
     private double price;
     private boolean purchased;
+    private boolean inCart;
 
     public ListItem() {
         this.item = null;
         this.price = -1;
         this.purchased = false;
+        this.inCart = false;
     }
 
     public ListItem(String item) {
         this.item = item;
         this.price = -1;
         this.purchased = false;
+        this.inCart = false;
     }
+
     public ListItem(String item, double price) {
         this.item = item;
         this.price = price;
         this.purchased = false;
+        this.inCart = false;
     }
+
     public ListItem(String item, double price, boolean purchased) {
         this.item = item;
         this.price = price;
         this.purchased = purchased;
+        this.inCart = false;
     }
 
     public String getItem() {
@@ -47,7 +54,10 @@ public class ListItem {
     public String getKey() {
         return key;
     }
-    public void setItem( String item ) {
+
+    public boolean getInCart() { return inCart; }
+
+    public void setItem(String item) {
         this.item = item;
     }
 
@@ -58,8 +68,13 @@ public class ListItem {
     public void setPurchased(boolean purchased) {
         this.purchased = purchased;
     }
+
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public void setInCart(boolean inCart) {
+        this.inCart = inCart;
     }
 
     // getter and setter methods

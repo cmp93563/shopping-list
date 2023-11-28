@@ -109,10 +109,11 @@ public class EditItemDialogFragment extends DialogFragment {
             price = priceView.getText().toString();
             ListItem listItem = new ListItem();
             listItem.setItem(itemName);
-            Log.e("ADD TO CART DIALOG", "price" + price + "price");
             if (price.isEmpty()) listItem.setPrice(-1);
-            else listItem.setPrice(Double.parseDouble(price));
-            Log.e("ADD TO CART DIALOG", price);
+            else {
+                listItem.setPrice(Double.parseDouble(price));
+                listItem.setInCart(true);
+            }
             listItem.setKey(key);
             hostFragment.updateItem(position, listItem, SAVE);
             dismiss();

@@ -38,7 +38,7 @@ public class RecentPurchasesFragment extends Fragment
     public static final String DEBUG_TAG = "RecentPurchasesFragment";
 
     private RecyclerView recyclerView;
-    private ShoppingListRecyclerAdapter recyclerAdapter;
+    private RecentPurchasesRecyclerAdapter recyclerAdapter;
 
     private List<ListItem> itemsList;
 
@@ -65,7 +65,7 @@ public class RecentPurchasesFragment extends Fragment
         // use a linear layout manager for the recycler view
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-//        recyclerAdapter = new ShoppingListRecyclerAdapter(getActivity(), itemsList, RecentPurchasesFragment.this);
+        recyclerAdapter = new RecentPurchasesRecyclerAdapter(getActivity(), itemsList, RecentPurchasesFragment.this);
         recyclerView.setAdapter(recyclerAdapter);
 
         // get a Firebase DB instance reference

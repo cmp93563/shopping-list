@@ -1,10 +1,5 @@
 package edu.uga.cs.shoppinglist;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,28 +11,27 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This is an adapter class for the RecyclerView to show all items in the shopping list.
- */
-
-public class ShoppingListRecyclerAdapter
-        extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.JobLeadHolder>
+public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentPurchasesRecyclerAdapter.JobLeadHolder>
         implements Filterable {
 
-    public static final String DEBUG_TAG = "ShoppingListRecyclerAdapter";
-    public static final String TAG = "ShoppingListRecyclerAdapter";
+    public static final String DEBUG_TAG = "RecentPurchasesRecyclerAdapter";
+    public static final String TAG = "RecentPurchasesRecyclerAdapter";
 
     private final Context context;
 
     private List<ListItem> values;
     private List<ListItem> originalValues;
 
-    ShoppingListFragment hostFragment;
+    RecentPurchasesFragment hostFragment;
 
-    public ShoppingListRecyclerAdapter( Context context, List<ListItem> jobLeadList, ShoppingListFragment hostFragment ) {
+    public RecentPurchasesRecyclerAdapter( Context context, List<ListItem> jobLeadList, RecentPurchasesFragment hostFragment ) {
         this.context = context;
         this.values = jobLeadList;
         this.originalValues = new ArrayList<ListItem>( jobLeadList );
@@ -54,7 +48,7 @@ public class ShoppingListRecyclerAdapter
     public static class JobLeadHolder extends RecyclerView.ViewHolder {
 
         TextView itemName;
-        String price;
+        TextView price;
         Button checkout;
 
         public JobLeadHolder( View itemView ) {
@@ -67,19 +61,19 @@ public class ShoppingListRecyclerAdapter
 
     @NonNull
     @Override
-    public JobLeadHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
+    public RecentPurchasesRecyclerAdapter.JobLeadHolder onCreateViewHolder(ViewGroup parent, int viewType ) {
         // We need to make sure that all CardViews have the same, full width, allowed by the parent view.
         // This is a bit tricky, and we must provide the parent reference (the second param of inflate)
         // and false as the third parameter (don't attach to root).
         // Consequently, the parent view's (the RecyclerView) width will be used (match_parent).
         View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
-        return new JobLeadHolder( view );
+        return new RecentPurchasesRecyclerAdapter.JobLeadHolder( view );
     }
 
     // This method fills in the values of a holder to show a JobLead.
     // The position parameter indicates the position on the list of jobs list.
     @Override
-    public void onBindViewHolder( JobLeadHolder holder, int position ) {
+    public void onBindViewHolder(RecentPurchasesRecyclerAdapter.JobLeadHolder holder, int position ) {
 
         ListItem listItem = values.get( position );
 
@@ -90,33 +84,19 @@ public class ShoppingListRecyclerAdapter
         String price = "0";
 
         holder.itemName.setText( listItem.getItem());
+//        holder.price.setText( "0" );
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AddItemDialogFragment newFragment = new AddItemDialogFragment();
-//                newFragment.setHostFragment(hostFragment);
-////                newFragment.show(getParentFragmentManager(), null);
-//                Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
-//                Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-//                EditItemDialogFragment editItemFragment =
-//                        EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item );
-//                editItemFragment.setHostFragment(hostFragment);
-//                editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
-//            }
-//        });
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("RP RECYCLER", "CHECKOUT CLICKED");
                 try {
-                    AddToCartDialogFragment newFragment = new AddToCartDialogFragment();
+                    EditPurchaseDialogFragment newFragment = new EditPurchaseDialogFragment();
                     newFragment.setHostFragment(hostFragment);
                     Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
                     Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-                    AddToCartDialogFragment editItemFragment =
-                            AddToCartDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price );
+                    EditPurchaseDialogFragment editItemFragment =
+                            EditPurchaseDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price );
                     editItemFragment.setHostFragment(hostFragment);
                     editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
                 } catch (Exception e) {

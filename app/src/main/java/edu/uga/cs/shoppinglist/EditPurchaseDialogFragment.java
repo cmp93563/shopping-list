@@ -15,30 +15,25 @@ import androidx.fragment.app.DialogFragment;
 public class EditPurchaseDialogFragment extends DialogFragment {
 
     // indicate the type of an edit
-    public static final int SAVE = 1;   // update an existing job lead
-    public static final int DELETE = 2; // delete an existing job lead
+    public static final int SAVE = 1;   // update an existing item
+    public static final int DELETE = 2; // delete an existing item
 
     private EditText itemView;
     private EditText priceView;
 
-    int position;     // the position of the edited JobLead on the list of job leads
+    int position;     // the position of the edited ListItem on the list of items
     String key;
     String item;
     String price;
 
     private RecentPurchasesFragment hostFragment;
-
-    // A callback listener interface to finish up the editing of a JobLead.
-    // ReviewJobLeadsActivity implements this listener interface, as it will
-    // need to update the list of JobLeads and also update the RecyclerAdapter to reflect the
-    // changes.
     public interface EditItemDialogListener {
         void updateItem(int position, ListItem listItem, int action);
     }
 
     public static EditPurchaseDialogFragment newInstance(int position, String key, String item, String price) {
         EditPurchaseDialogFragment dialog = new EditPurchaseDialogFragment();
-        // Supply job lead values as an argument.
+        // Supply item values as an argument.
         Bundle args = new Bundle();
         args.putString("key", key);
         args.putInt("position", position);
@@ -63,7 +58,7 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         itemView = layout.findViewById(R.id.item);
         priceView = layout.findViewById(R.id.price);
 
-        // Pre-fill the edit texts with the current values for this job lead.
+        // Pre-fill the edit texts with the current values for this item.
         // The user will be able to modify them.
         itemView.setText(item);
         priceView.setText(price);

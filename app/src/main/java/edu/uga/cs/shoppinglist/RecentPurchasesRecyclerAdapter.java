@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentPurchasesRecyclerAdapter.JobLeadHolder>
+public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentPurchasesRecyclerAdapter.ListItemHolder>
         implements Filterable {
 
     public static final String DEBUG_TAG = "RecentPurchasesRecyclerAdapter";
@@ -31,10 +31,10 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
 
     RecentPurchasesFragment hostFragment;
 
-    public RecentPurchasesRecyclerAdapter( Context context, List<ListItem> jobLeadList, RecentPurchasesFragment hostFragment ) {
+    public RecentPurchasesRecyclerAdapter( Context context, List<ListItem> itemsList, RecentPurchasesFragment hostFragment ) {
         this.context = context;
-        this.values = jobLeadList;
-        this.originalValues = new ArrayList<ListItem>( jobLeadList );
+        this.values = itemsList;
+        this.originalValues = new ArrayList<ListItem>( itemsList );
         this.hostFragment = hostFragment;
     }
 
@@ -45,13 +45,13 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
     }
 
     // The adapter must have a ViewHolder class to "hold" one item to show.
-    public static class JobLeadHolder extends RecyclerView.ViewHolder {
+    public static class ListItemHolder extends RecyclerView.ViewHolder {
 
         TextView itemName;
         TextView price;
         Button checkout;
 
-        public JobLeadHolder( View itemView ) {
+        public ListItemHolder( View itemView ) {
             super( itemView );
 
             itemName = itemView.findViewById( R.id.itemName );
@@ -61,19 +61,19 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
 
     @NonNull
     @Override
-    public RecentPurchasesRecyclerAdapter.JobLeadHolder onCreateViewHolder(ViewGroup parent, int viewType ) {
+    public RecentPurchasesRecyclerAdapter.ListItemHolder onCreateViewHolder(ViewGroup parent, int viewType ) {
         // We need to make sure that all CardViews have the same, full width, allowed by the parent view.
         // This is a bit tricky, and we must provide the parent reference (the second param of inflate)
         // and false as the third parameter (don't attach to root).
         // Consequently, the parent view's (the RecyclerView) width will be used (match_parent).
         View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
-        return new RecentPurchasesRecyclerAdapter.JobLeadHolder( view );
+        return new RecentPurchasesRecyclerAdapter.ListItemHolder( view );
     }
 
-    // This method fills in the values of a holder to show a JobLead.
-    // The position parameter indicates the position on the list of jobs list.
+    // This method fills in the values of a holder to show an item.
+    // The position parameter indicates the position on the list of items.
     @Override
-    public void onBindViewHolder(RecentPurchasesRecyclerAdapter.JobLeadHolder holder, int position ) {
+    public void onBindViewHolder(RecentPurchasesRecyclerAdapter.ListItemHolder holder, int position ) {
 
         ListItem listItem = values.get( position );
 
@@ -130,17 +130,11 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                     List<ListItem> resultsModel = new ArrayList<>();
                     String searchStr = constraint.toString().toLowerCase();
 
-                    for( ListItem jobLead : list ) {
+                    for( ListItem listItem : list ) {
                         // check if either the company name or the comments contain the search string
-                        if( jobLead.getItem().toLowerCase().contains( searchStr )) {
-                            resultsModel.add( jobLead );
+                        if( listItem.getItem().toLowerCase().contains( searchStr )) {
+                            resultsModel.add( listItem );
                         }
-/*
-                        // this may be a faster approach with a long list of items to search
-                        if( jobLead.getCompanyName().regionMatches( true, i, searchStr, 0, length ) )
-                            return true;
-
- */
                     }
 
                     filterResults.count = resultsModel.size();

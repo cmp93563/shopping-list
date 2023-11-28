@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class ShoppingListRecyclerAdapter
-        extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.JobLeadHolder>
+        extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.ItemHolder>
         implements Filterable {
 
     public static final String DEBUG_TAG = "ShoppingListRecyclerAdapter";
@@ -36,10 +36,10 @@ public class ShoppingListRecyclerAdapter
 
     ShoppingListFragment hostFragment;
 
-    public ShoppingListRecyclerAdapter( Context context, List<ListItem> jobLeadList, ShoppingListFragment hostFragment ) {
+    public ShoppingListRecyclerAdapter( Context context, List<ListItem> itemsList, ShoppingListFragment hostFragment ) {
         this.context = context;
-        this.values = jobLeadList;
-        this.originalValues = new ArrayList<ListItem>( jobLeadList );
+        this.values = itemsList;
+        this.originalValues = new ArrayList<ListItem>( itemsList );
         this.hostFragment = hostFragment;
     }
 
@@ -50,13 +50,13 @@ public class ShoppingListRecyclerAdapter
     }
 
     // The adapter must have a ViewHolder class to "hold" one item to show.
-    public static class JobLeadHolder extends RecyclerView.ViewHolder {
+    public static class ItemHolder extends RecyclerView.ViewHolder {
 
         TextView itemName;
         String price;
         Button checkout;
 
-        public JobLeadHolder( View itemView ) {
+        public ItemHolder( View itemView ) {
             super( itemView );
 
             itemName = itemView.findViewById( R.id.itemName );
@@ -66,19 +66,19 @@ public class ShoppingListRecyclerAdapter
 
     @NonNull
     @Override
-    public JobLeadHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
+    public ItemHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
         // We need to make sure that all CardViews have the same, full width, allowed by the parent view.
         // This is a bit tricky, and we must provide the parent reference (the second param of inflate)
         // and false as the third parameter (don't attach to root).
         // Consequently, the parent view's (the RecyclerView) width will be used (match_parent).
         View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
-        return new JobLeadHolder( view );
+        return new ItemHolder( view );
     }
 
-    // This method fills in the values of a holder to show a JobLead.
-    // The position parameter indicates the position on the list of jobs list.
+    // This method fills in the values of a holder to show a ListItem.
+    // The position parameter indicates the position on the list of items list.
     @Override
-    public void onBindViewHolder( JobLeadHolder holder, int position ) {
+    public void onBindViewHolder( ItemHolder holder, int position ) {
 
         ListItem listItem = values.get( position );
 
@@ -149,14 +149,14 @@ public class ShoppingListRecyclerAdapter
                     List<ListItem> resultsModel = new ArrayList<>();
                     String searchStr = constraint.toString().toLowerCase();
 
-                    for( ListItem jobLead : list ) {
+                    for( ListItem listItem : list ) {
                         // check if either the company name or the comments contain the search string
-                        if( jobLead.getItem().toLowerCase().contains( searchStr )) {
-                            resultsModel.add( jobLead );
+                        if( listItem.getItem().toLowerCase().contains( searchStr )) {
+                            resultsModel.add( listItem );
                         }
 /*
                         // this may be a faster approach with a long list of items to search
-                        if( jobLead.getCompanyName().regionMatches( true, i, searchStr, 0, length ) )
+                        if( listItem.getCompanyName().regionMatches( true, i, searchStr, 0, length ) )
                             return true;
 
  */

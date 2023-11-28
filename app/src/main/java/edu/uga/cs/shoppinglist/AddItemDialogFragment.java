@@ -16,8 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
-// A DialogFragment class to handle job lead additions from the job lead review activity
-// It uses a DialogFragment to allow the input of a new job lead.
+// A DialogFragment class to handle item additions from the item review activity
+// It uses a DialogFragment to allow the input of a new item.
 public class AddItemDialogFragment extends DialogFragment {
 
     private EditText item;
@@ -60,10 +60,10 @@ public class AddItemDialogFragment extends DialogFragment {
     private class AddListItemListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            // get the new job lead data from the user
+            // get the new item data from the user
             String itemName = item.getText().toString();
 
-            // create a new JobLead object
+            // create a new ListItem object
             ListItem listItem = new ListItem( itemName );
 
             hostFragment.addListItem( listItem );

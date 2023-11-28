@@ -35,10 +35,13 @@ public class ShoppingListRecyclerAdapter
     private List<ListItem> values;
     private List<ListItem> originalValues;
 
-    public ShoppingListRecyclerAdapter( Context context, List<ListItem> jobLeadList ) {
+    ShoppingListFragment hostFragment;
+
+    public ShoppingListRecyclerAdapter( Context context, List<ListItem> jobLeadList, ShoppingListFragment hostFragment ) {
         this.context = context;
         this.values = jobLeadList;
         this.originalValues = new ArrayList<ListItem>( jobLeadList );
+        this.hostFragment = hostFragment;
     }
 
     // reset the originalValues to the current contents of values
@@ -90,10 +93,14 @@ public class ShoppingListRecyclerAdapter
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AddItemDialogFragment newFragment = new AddItemDialogFragment();
+                newFragment.setHostFragment(hostFragment);
+//                newFragment.show(getParentFragmentManager(), null);
                 Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
                 Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
                 EditItemDialogFragment editItemFragment =
                         EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item );
+                editItemFragment.setHostFragment(hostFragment);
                 editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
             }
         });

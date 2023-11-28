@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -26,6 +27,8 @@ public class EditItemDialogFragment extends DialogFragment {
     String key;
     String item;
 
+    private ShoppingListFragment hostFragment;
+
     // A callback listener interface to finish up the editing of a JobLead.
     // ReviewJobLeadsActivity implements this listener interface, as it will
     // need to update the list of JobLeads and also update the RecyclerAdapter to reflect the
@@ -36,11 +39,10 @@ public class EditItemDialogFragment extends DialogFragment {
 
     public static EditItemDialogFragment newInstance(int position, String key, String item) {
         EditItemDialogFragment dialog = new EditItemDialogFragment();
-
         // Supply job lead values as an argument.
         Bundle args = new Bundle();
-        args.putString( "key", key );
-        args.putInt( "position", position );
+        args.putString("key", key);
+        args.putInt("position", position);
         args.putString("item", item);
         dialog.setArguments(args);
 
@@ -49,29 +51,29 @@ public class EditItemDialogFragment extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog( Bundle savedInstanceState ) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        key = getArguments().getString( "key" );
-        position = getArguments().getInt( "position" );
-        item = getArguments().getString( "item" );
+        key = getArguments().getString("key");
+        position = getArguments().getInt("position");
+        item = getArguments().getString("item");
 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = inflater.inflate( R.layout.fragment_add_item_dialog, getActivity().findViewById( R.id.root ) );
+        final View layout = inflater.inflate(R.layout.fragment_add_item_dialog, getActivity().findViewById(R.id.root));
 
-        itemView = layout.findViewById( R.id.editText1 );
+        itemView = layout.findViewById(R.id.editText1);
 
         // Pre-fill the edit texts with the current values for this job lead.
         // The user will be able to modify them.
-        itemView.setText( item );
+        itemView.setText(item);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder( getActivity(), R.style.AlertDialogStyle );
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
         builder.setView(layout);
 
         // Set the title of the AlertDialog
-        builder.setTitle( "Edit Item" );
+        builder.setTitle("Edit Item");
 
         // The Cancel button handler
-        builder.setNegativeButton( android.R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 // close the dialog
@@ -80,10 +82,10 @@ public class EditItemDialogFragment extends DialogFragment {
         });
 
         // The Save button handler
-        builder.setPositiveButton( "SAVE", new SaveButtonClickListener() );
+        builder.setPositiveButton("SAVE", new SaveButtonClickListener());
 
         // The Delete button handler
-        builder.setNeutralButton( "DELETE", new DeleteButtonClickListener() );
+        builder.setNeutralButton("DELETE", new DeleteButtonClickListener());
 
         // Create the AlertDialog and show it
         return builder.create();
@@ -93,31 +95,25 @@ public class EditItemDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             String itemName = itemView.getText().toString();
-            ListItem listItem = new ListItem( itemName );
-            listItem.setKey( key );
-
-            // get the Activity's listener to add the new job lead
-            EditItemDialogListener listener = (EditItemDialogFragment.EditItemDialogListener) getActivity();
-            // add the new job lead
-            listener.updateItem( position, listItem, SAVE );
-
-            // close the dialog
+            ListItem listItem = new ListItem(itemName);
+            listItem.setKey(key);
+            hostFragment.updateItem(position, listItem, SAVE);
             dismiss();
         }
     }
 
     private class DeleteButtonClickListener implements DialogInterface.OnClickListener {
         @Override
-        public void onClick( DialogInterface dialog, int which ) {
+        public void onClick(DialogInterface dialog, int which) {
 
-            ListItem listItem = new ListItem( item );
-            listItem.setKey( key );
-
-            // get the Activity's listener to add the new job lead
-            EditItemDialogFragment.EditItemDialogListener listener = (EditItemDialogFragment.EditItemDialogListener) getActivity();            // add the new job lead
-            listener.updateItem( position, listItem, DELETE );
-            // close the dialog
+            ListItem listItem = new ListItem(item);
+            listItem.setKey(key);
+            hostFragment.updateItem(position, listItem, DELETE);
             dismiss();
         }
+    }
+
+    public void setHostFragment(ShoppingListFragment hostFragment) {
+        this.hostFragment = hostFragment;
     }
 }

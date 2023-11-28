@@ -71,7 +71,7 @@ public class ShoppingListFragment extends Fragment
         // use a linear layout manager for the recycler view
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerAdapter = new ShoppingListRecyclerAdapter(getActivity(), itemsList);
+        recyclerAdapter = new ShoppingListRecyclerAdapter(getActivity(), itemsList, ShoppingListFragment.this);
         recyclerView.setAdapter(recyclerAdapter);
 
         // get a Firebase DB instance reference
@@ -97,6 +97,12 @@ public class ShoppingListFragment extends Fragment
                 System.out.println("ValueEventListener: reading failed: " + databaseError.getMessage());
             }
         });
+    }
+
+    public void setHost() {
+        EditItemDialogFragment newFragment = new EditItemDialogFragment();
+        newFragment.setHostFragment(ShoppingListFragment.this);
+        newFragment.show(getParentFragmentManager(), null);
     }
 
     public void updateItem( int position, ListItem listItem, int action ) {

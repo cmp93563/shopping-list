@@ -1,6 +1,8 @@
 package edu.uga.cs.shoppinglist;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -24,7 +27,8 @@ public class ShoppingListRecyclerAdapter
         extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.JobLeadHolder>
         implements Filterable {
 
-    public static final String DEBUG_TAG = "JobLeadRecyclerAdapter";
+    public static final String DEBUG_TAG = "ShoppingListRecyclerAdapter";
+    public static final String TAG = "ShoppingListRecyclerAdapter";
 
     private final Context context;
 
@@ -46,15 +50,12 @@ public class ShoppingListRecyclerAdapter
     // The adapter must have a ViewHolder class to "hold" one item to show.
     public static class JobLeadHolder extends RecyclerView.ViewHolder {
 
-        TextView companyName;
-        TextView phone;
-        TextView url;
-        TextView comments;
+        TextView itemName;
 
         public JobLeadHolder( View itemView ) {
             super( itemView );
 
-            companyName = itemView.findViewById( R.id.itemName );
+            itemName = itemView.findViewById( R.id.itemName );
         }
     }
 
@@ -78,7 +79,24 @@ public class ShoppingListRecyclerAdapter
 
         Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem );
 
-        holder.companyName.setText( listItem.getItem());
+//        holder.itemName.setText( listItem.getItem());
+        String key = listItem.getKey();
+        String item = listItem.getItem();
+//        String price = "0";
+
+        holder.itemName.setText( listItem.getItem());
+//        holder.price.setText( "0" );
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
+                Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
+                EditItemDialogFragment editItemFragment =
+                        EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item );
+                editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
+            }
+        });
     }
 
     @Override
@@ -138,82 +156,3 @@ public class ShoppingListRecyclerAdapter
         return filter;
     }
 }
-
-
-//package edu.uga.cs.shoppinglist;
-//
-//import android.content.Context;
-//import android.util.Log;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.TextView;
-//
-//import androidx.annotation.NonNull;
-//import androidx.recyclerview.widget.RecyclerView;
-//
-//import java.util.List;
-//
-///**
-// * This is an adapter class for the RecyclerView to show all items.
-// */
-//public class ShoppingListRecyclerAdapter extends RecyclerView.Adapter<ShoppingListRecyclerAdapter.ListItemHolder> {
-//
-//    public static final String DEBUG_TAG = "ShoppingListRecyclerAdapter";
-//
-//    private List<ListItem> itemsList;
-//    private Context context;
-//
-//    public ShoppingListRecyclerAdapter( List<ListItem> itemList, Context context ) {
-//        this.itemsList = itemList;
-//        this.context = context;
-//    }
-//
-//    // The adapter must have a ViewHolder class to "hold" one item to show.
-//    class ListItemHolder extends RecyclerView.ViewHolder {
-//
-//        TextView item;
-//        TextView price;
-//        TextView purchased;
-//
-//        public ListItemHolder(View itemView ) {
-//            super(itemView);
-//
-//            item = itemView.findViewById( R.id.itemName );
-//        }
-//    }
-//
-//    @NonNull
-//    @Override
-//    public ListItemHolder onCreateViewHolder( ViewGroup parent, int viewType ) {
-//        View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
-//        return new ListItemHolder( view );
-//    }
-//
-//    // This method fills in the values of the Views to show an item
-//    @Override
-//    public void onBindViewHolder( ListItemHolder holder, int position ) {
-//        ListItem listItem = itemsList.get( position );
-//
-//        Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem );
-//
-//        String item = listItem.getItem();
-//
-//        holder.item.setText( listItem.getItem());
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
-//                //Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-////                EditItemDialogFragment editJobFragment =
-////                        EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, company, phone, url, comments );
-////                editJobFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return itemsList.size();
-//    }
-//}

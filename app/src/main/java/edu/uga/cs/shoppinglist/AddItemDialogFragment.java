@@ -12,6 +12,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
@@ -23,13 +24,9 @@ public class AddItemDialogFragment extends DialogFragment {
 
     private ShoppingListFragment hostFragment;
 
-
-    // This interface will be used to obtain the new job lead from an AlertDialog.
-    // A class implementing this interface will handle the new job lead, i.e. store it
-    // in Firebase and add it to the RecyclerAdapter.
-//    public interface AddListItemDialogListener {
-//        void addListItem(ListItem listItem);
-//    }
+    public interface AddListItemDialogListener {
+        void addListItem(ListItem listItem);
+    }
 
     @NonNull
     @Override
@@ -40,17 +37,14 @@ public class AddItemDialogFragment extends DialogFragment {
                 getActivity().findViewById(R.id.root));
 
         // get the view objects in the AlertDialog
-        item = layout.findViewById( R.id.editText1 );
-
-        // create a new AlertDialog
+        item = layout.findViewById(R.id.editText1);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Set its view (inflated above).
         builder.setView(layout);
 
         // Set the title of the AlertDialog
-        builder.setTitle( "New Item" );
+        builder.setTitle("Add New Item");
         // Provide the negative button listener
-        builder.setNegativeButton( android.R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 // close the dialog
@@ -58,9 +52,8 @@ public class AddItemDialogFragment extends DialogFragment {
             }
         });
         // Provide the positive button listener
-        builder.setPositiveButton( android.R.string.ok, new AddListItemListener() );
+        builder.setPositiveButton(android.R.string.ok, new AddListItemListener());
 
-        // Create the AlertDialog and show it
         return builder.create();
     }
 

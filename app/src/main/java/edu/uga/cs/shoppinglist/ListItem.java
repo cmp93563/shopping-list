@@ -21,6 +21,11 @@ public class ListItem {
         this.price = -1;
         this.purchased = false;
     }
+    public ListItem(String item, double price) {
+        this.item = item;
+        this.price = price;
+        this.purchased = false;
+    }
     public ListItem(String item, double price, boolean purchased) {
         this.item = item;
         this.price = price;
@@ -42,9 +47,6 @@ public class ListItem {
     public String getKey() {
         return key;
     }
-    public void setKey(String key) {
-        this.key = key;
-    }
     public void setItem() {
         this.item = item;
     }
@@ -55,6 +57,9 @@ public class ListItem {
 
     public void setPurchased(boolean purchased) {
         this.purchased = purchased;
+    }
+    public void setKey(String key) {
+        this.key = key;
     }
 
     // getter and setter methods

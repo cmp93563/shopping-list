@@ -2,7 +2,6 @@ package edu.uga.cs.shoppinglist;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -111,12 +110,12 @@ public class ShoppingListRecyclerAdapter
             public void onClick(View v) {
                 Log.d("RP RECYCLER", "CHECKOUT CLICKED");
                 try {
-                    AddToCartDialogFragment newFragment = new AddToCartDialogFragment();
+                    EditItemDialogFragment newFragment = new EditItemDialogFragment();
                     newFragment.setHostFragment(hostFragment);
                     Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
                     Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-                    AddToCartDialogFragment editItemFragment =
-                            AddToCartDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price );
+                    EditItemDialogFragment editItemFragment =
+                            EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price );
                     editItemFragment.setHostFragment(hostFragment);
                     editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
                 } catch (Exception e) {

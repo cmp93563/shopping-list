@@ -1,19 +1,14 @@
 package edu.uga.cs.shoppinglist;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,7 +27,7 @@ import java.util.List;
 
 public class ShoppingListFragment extends Fragment
         implements AddItemDialogFragment.AddListItemDialogListener,
-        AddToCartDialogFragment.EditItemDialogListener {
+        EditItemDialogFragment.EditItemDialogListener {
     public static final String DEBUG_TAG = "ShoppingList";
 
     private RecyclerView recyclerView;
@@ -65,7 +60,7 @@ public class ShoppingListFragment extends Fragment
 
         recyclerView = getView().findViewById(R.id.recyclerView);
 
-        // initialize the Job Lead list
+        // initialize the items list
         itemsList = new ArrayList<>();
 
         // use a linear layout manager for the recycler view
@@ -81,7 +76,7 @@ public class ShoppingListFragment extends Fragment
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Once we have a DataSnapshot object, we need to iterate over the elements and place them on our job lead list.
+                // Once we have a DataSnapshot object, we need to iterate over the elements and place them on our items list.
                 itemsList.clear(); // clear the current content; this is inefficient!
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ListItem listItem = postSnapshot.getValue(ListItem.class);
@@ -109,17 +104,11 @@ public class ShoppingListFragment extends Fragment
                 .getReference()
                 .child( "PurchasedList" )
                 .child( listItem.getKey() );
-        if( action == AddToCartDialogFragment.SAVE && listItem.getPrice() == -1) {
-            Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + listItem.getItem() + ")" );
+        if( action == EditItemDialogFragment.SAVE && listItem.getPrice() == -1) {
+            Log.d( DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")" );
 
-            // Update the recycler view to show the changes in the updated job lead in that view
+            // Update the recycler view to show the changes in the updated item in that view
             recyclerAdapter.notifyItemChanged( position );
-
-            // Update this job lead in Firebase
-            // Note that we are using a specific key (one child in the list)
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
             shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
@@ -140,10 +129,10 @@ public class ShoppingListFragment extends Fragment
                             Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if( action == AddToCartDialogFragment.SAVE && listItem.getPrice() > -1) {
-            Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + listItem.getItem() + ")" );
+        } else if( action == EditItemDialogFragment.SAVE && listItem.getPrice() > -1) {
+            Log.d( DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")" );
 
-            // Update the recycler view to show the changes in the updated job lead in that view
+            // Update the recycler view to show the changes in the updated item in that view
             recyclerAdapter.notifyItemChanged( position );
             purchaseRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
@@ -165,27 +154,21 @@ public class ShoppingListFragment extends Fragment
                             Toast.LENGTH_SHORT).show();
                 }
             });
-            Log.d( DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")" );
+            Log.d( DEBUG_TAG, "Moving item at: " + position + "(" + listItem.getItem() + ") to purchased" );
 
-            // remove the deleted job lead from the list (internal list in the App)
+            // remove the deleted item from the list (internal list in the App)
             itemsList.remove( position );
 
-            // Update the recycler view to remove the deleted job lead from that view
+            // Update the recycler view to remove the deleted item from that view
             recyclerAdapter.notifyItemRemoved( position );
-
-            // Delete this job lead in Firebase.
-            // Note that we are using a specific key (one child in the list)
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
             shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + listItem.getItem() + ")" );
-                            Toast.makeText(getActivity(), "Job lead deleted for " + listItem.getItem(),
+                            Log.d( DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ") from shopping list." );
+                            Toast.makeText(getActivity(), "added " + listItem.getItem() + " to cart",
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -194,12 +177,12 @@ public class ShoppingListFragment extends Fragment
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
                     Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
-                    Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + listItem.getItem() + ")" );
-                    Toast.makeText(getActivity(), "Failed to delete " + listItem.getItem(),
+                    Log.d( DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ") from shopping list" );
+                    Toast.makeText(getActivity(), "Failed to add " + listItem.getItem() + " to cart",
                             Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if ( action == AddToCartDialogFragment.DELETE ) {
+        } else if ( action == EditItemDialogFragment.DELETE ) {
             Log.d( DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")" );
             try {
                 itemsList.remove( position );
@@ -215,8 +198,8 @@ public class ShoppingListFragment extends Fragment
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + listItem.getItem() + ")" );
-                            Toast.makeText(getActivity(), "Job lead deleted for " + listItem.getItem(),
+                            Log.d( DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ")" );
+                            Toast.makeText(getActivity(), "item deleted for " + listItem.getItem(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -225,7 +208,7 @@ public class ShoppingListFragment extends Fragment
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
                     Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
-                    Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + listItem.getItem() + ")" );
+                    Log.d( DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ")" );
                     Toast.makeText(getActivity(), "Failed to delete " + listItem.getItem(),
                             Toast.LENGTH_SHORT).show();
                 }

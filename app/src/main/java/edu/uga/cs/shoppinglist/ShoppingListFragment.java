@@ -100,6 +100,15 @@ public class ShoppingListFragment extends Fragment
     }
 
     public void updateItem( int position, ListItem listItem, int action) {
+        DatabaseReference shoppingListRef = database
+                .getReference()
+                .child( "ShoppingList" )
+                .child( listItem.getKey() );
+
+        DatabaseReference purchaseRef = database
+                .getReference()
+                .child( "PurchasedList" )
+                .child( listItem.getKey() );
         if( action == AddToCartDialogFragment.SAVE && listItem.getPrice() == -1) {
             Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + listItem.getItem() + ")" );
 
@@ -108,14 +117,10 @@ public class ShoppingListFragment extends Fragment
 
             // Update this job lead in Firebase
             // Note that we are using a specific key (one child in the list)
-            DatabaseReference ref = database
-                    .getReference()
-                    .child( "ShoppingList" )
-                    .child( listItem.getKey() );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
             // to maintain job leads.
-            ref.addListenerForSingleValueEvent( new ValueEventListener() {
+            shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().setValue( listItem ).addOnSuccessListener( new OnSuccessListener<Void>() {
@@ -140,17 +145,7 @@ public class ShoppingListFragment extends Fragment
 
             // Update the recycler view to show the changes in the updated job lead in that view
             recyclerAdapter.notifyItemChanged( position );
-
-            // Update this job lead in Firebase
-            // Note that we are using a specific key (one child in the list)
-            DatabaseReference ref = database
-                    .getReference()
-                    .child( "PurchasedList" )
-                    .child( listItem.getKey() );
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
-            ref.addListenerForSingleValueEvent( new ValueEventListener() {
+            purchaseRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().setValue( listItem ).addOnSuccessListener( new OnSuccessListener<Void>() {
@@ -180,14 +175,10 @@ public class ShoppingListFragment extends Fragment
 
             // Delete this job lead in Firebase.
             // Note that we are using a specific key (one child in the list)
-            DatabaseReference refNew = database
-                    .getReference()
-                    .child( "ShoppingList" )
-                    .child( listItem.getKey() );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
             // to maintain job leads.
-            refNew.addListenerForSingleValueEvent( new ValueEventListener() {
+            shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
@@ -210,23 +201,15 @@ public class ShoppingListFragment extends Fragment
             });
         } else if ( action == AddToCartDialogFragment.DELETE ) {
             Log.d( DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")" );
+            try {
+                itemsList.remove( position );
+                recyclerAdapter.notifyItemRemoved( position );
+            } catch (Exception e) {
+                Log.e("SHOPPING LIST", e.getMessage());
+            }
 
-            // remove the deleted job lead from the list (internal list in the App)
-            itemsList.remove( position );
 
-            // Update the recycler view to remove the deleted job lead from that view
-            recyclerAdapter.notifyItemRemoved( position );
-
-            // Delete this job lead in Firebase.
-            // Note that we are using a specific key (one child in the list)
-            DatabaseReference ref = database
-                    .getReference()
-                    .child( "ShoppingList" )
-                    .child( listItem.getKey() );
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
-            ref.addListenerForSingleValueEvent( new ValueEventListener() {
+            shoppingListRef.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {

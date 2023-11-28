@@ -117,7 +117,7 @@ public class AddToCartDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
 
-            ListItem listItem = new ListItem(item, Double.parseDouble(price));
+            ListItem listItem = new ListItem(item);
             listItem.setKey(key);
             hostFragment.updateItem(position, listItem, DELETE);
             dismiss();

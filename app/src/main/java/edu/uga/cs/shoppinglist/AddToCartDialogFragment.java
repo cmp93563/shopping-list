@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,8 +106,18 @@ public class AddToCartDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             String itemName = itemView.getText().toString();
-            String price = priceView.getText().toString();
-            ListItem listItem = new ListItem(itemName, Double.parseDouble(price));
+            String price = "";
+            price = priceView.getText().toString();
+            ListItem listItem = new ListItem();
+            listItem.setItem(itemName);
+            Log.e("ADD TO CART DIALOG", "price" + price + "price");
+            if (price.isEmpty()) listItem.setPrice(-1);
+            else listItem.setPrice(Double.parseDouble(price));
+//            if (price != "") listItem.setPrice(Double.parseDouble(price));
+//            if (Double.parseDouble(price) > -1) listItem.setPrice(Double.parseDouble(price));
+//            ListItem listItem = new ListItem(itemName, Double.parseDouble(price));
+//            if (price == "") price = "-1";
+            Log.e("ADD TO CART DIALOG", price);
             listItem.setKey(key);
             hostFragment.updateItem(position, listItem, SAVE);
             dismiss();

@@ -47,7 +47,7 @@ public class ListItem {
     public String getKey() {
         return key;
     }
-    public void setItem() {
+    public void setItem( String item ) {
         this.item = item;
     }
 

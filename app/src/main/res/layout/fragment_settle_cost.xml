@@ -19,9 +19,67 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:layout_marginBottom="30dp"
             android:text="Settle Cost"
             android:textColor="#000000"
             android:textSize="48sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Total of Recent Purchases:"
+            android:textColor="#000000"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="#EA97E2"
+            android:padding="15dp"
+            android:text="$_______"
+            android:textColor="#000000"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Average Cost Per Roommate:"
+            android:textColor="#000000"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="#EA97E2"
+            android:padding="15dp"
+            android:text="$_______"
+            android:textColor="#000000"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Money Spent:"
+            android:textColor="#000000"
+            android:textSize="28sp" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settle Cost"
+            android:textColor="#000000"
+            android:textSize="28sp"
+            android:backgroundTint="#EA97E2" />
 
     </LinearLayout>
 </FrameLayout>

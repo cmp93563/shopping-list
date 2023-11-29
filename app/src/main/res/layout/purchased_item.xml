@@ -20,16 +20,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="5dp"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <TextView
                 android:id="@+id/itemNameRP"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="item_name"
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_weight="1"
+                android:layout_marginRight="10dp"
                 android:gravity="center_vertical"
                 android:text="price"
                 android:textColor="#000000"

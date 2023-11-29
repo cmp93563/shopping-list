@@ -6,26 +6,22 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
-import java.util.List;
+import com.google.firebase.auth.FirebaseAuth;
 
-// A DialogFragment class to handle item additions from the item review activity
-// It uses a DialogFragment to allow the input of a new item.
-public class AddItemDialogFragment extends DialogFragment {
+public class CheckoutDialogFragment extends DialogFragment {
 
-    private EditText item;
+    private EditText etTotal;
 
     private ShoppingListFragment hostFragment;
 
-    public interface AddListItemDialogListener {
-        void addListItem(ListItem listItem);
+    public interface CheckoutDialogListener {
+        //void addListItem(ListItem listItem);
     }
 
     @NonNull
@@ -33,16 +29,18 @@ public class AddItemDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Create the AlertDialog view
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View layout = inflater.inflate(R.layout.fragment_add_item_dialog,
+        final View layout = inflater.inflate(R.layout.fragment_checkout_dialog,
                 getActivity().findViewById(R.id.root));
 
         // get the view objects in the AlertDialog
-        item = layout.findViewById(R.id.editText1);
+        etTotal = layout.findViewById(R.id.editTextPrice);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(layout);
 
         // Set the title of the AlertDialog
-        builder.setTitle("Add New Item");
+        builder.setTitle("Checkout");
+
         // Provide the negative button listener
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -52,21 +50,17 @@ public class AddItemDialogFragment extends DialogFragment {
             }
         });
         // Provide the positive button listener
-        builder.setPositiveButton(android.R.string.ok, new AddListItemListener());
+        builder.setPositiveButton(android.R.string.ok, new CheckoutListener());
 
         return builder.create();
     }
 
-    private class AddListItemListener implements DialogInterface.OnClickListener {
+    private class CheckoutListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            // get the new item data from the user
-            String itemName = item.getText().toString();
 
-            // create a new ListItem object
-            ListItem listItem = new ListItem( itemName, false, false );
-
-            hostFragment.addListItem( listItem );
+            double total = Double.parseDouble(etTotal.getText().toString());
+            hostFragment.addPurchase(total);
 
             // close the dialog
             dismiss();

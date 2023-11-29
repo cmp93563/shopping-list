@@ -16,13 +16,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ShoppingListFragment extends Fragment
@@ -35,7 +38,7 @@ public class ShoppingListFragment extends Fragment
     private ShoppingListRecyclerAdapter recyclerAdapter;
 
     private List<ListItem> itemsList;
-    private List<ListItem> purchasedList;
+    private List<ListItem> purchasedItems;
 
     private FirebaseDatabase database;
 
@@ -101,40 +104,61 @@ public class ShoppingListFragment extends Fragment
 
         try {
             checkout.setOnClickListener(v -> {
+                CheckoutDialogFragment newFragment = new CheckoutDialogFragment();
+                newFragment.setHostFragment(ShoppingListFragment.this);
+                newFragment.show(getParentFragmentManager(), null);
+                /*
                 List<Integer> positions = new ArrayList<>();
+
+                purchasedItems = new ArrayList<>();
+
                 for (ListItem li : itemsList) {
                     if (li.getInCart()) {
                         li.setPurchased(true);
 
-                        purchasedList = new ArrayList<>();
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("PurchasedList");
+                        // add purchased item to array list
+                        purchasedItems.add(li);
 
-                        myRef.push().setValue(li).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    } // if
+                } // for
+
+                //create new Purchase Item
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                String roommateName = mAuth.getCurrentUser().getDisplayName();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String date = sdf.format(new Date());
+
+                Purchase purchase = new Purchase(purchasedItems,-1,roommateName,date);
+
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("PurchasesList");
+
+                myRef.push().setValue(purchase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        recyclerView.post(new Runnable() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                recyclerView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        recyclerView.smoothScrollToPosition(itemsList.size() - 1);
-                                    }
-                                });
-
-                                // Show a quick confirmation
-                                Toast.makeText(getActivity(), li.getItem() + " added successfully", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getActivity(), "Failed to add " + li.getItem(), Toast.LENGTH_SHORT).show();
+                            public void run() {
+                                recyclerView.smoothScrollToPosition(itemsList.size() - 1);
                             }
                         });
-                        Log.d("SHOPPING LIST POS", Integer.toString(position));
-                        positions.add(position);
-                        position++;
+
+                        // Show a quick confirmation
+                        Toast.makeText(getActivity(), "purchase added successfully", Toast.LENGTH_SHORT).show();
+                        }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Failed to add purchase", Toast.LENGTH_SHORT).show();
                     }
-                }
+                });
+                Log.d("SHOPPING LIST POS", Integer.toString(position));
+                positions.add(position);
+                position++;
+
+
 //                int minus = 0;
 //                Log.d("SHOPPING LIST ITEMS LIST", itemsList.toString());
 //                for (int position : positions) {
@@ -171,7 +195,8 @@ public class ShoppingListFragment extends Fragment
 //                        }
 //                    });
 //                }
-            });
+//                */
+            }); // checkout listener
         } catch (Exception e) {
             Log.e("SHOPPING LIST ERROR", e.getMessage());
         }
@@ -302,5 +327,63 @@ public class ShoppingListFragment extends Fragment
                 Toast.makeText(getActivity(), "Failed to add " + listItem.getItem(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void addPurchase(double total) {
+        List<Integer> positions = new ArrayList<>();
+
+        purchasedItems = new ArrayList<>();
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+        for (ListItem li : itemsList) {
+            if (li.getInCart()) {
+                li.setPurchased(true);
+
+                // add purchased item to array list
+                purchasedItems.add(li);
+
+                //then delete from shopping list
+                DatabaseReference myRef = database.getReference("ShoppingList");
+                myRef.child(li.getKey()).removeValue();
+
+                Log.d(DEBUG_TAG, "purchased item: " + li.getItem());
+
+            } // if
+        } // for
+
+        //create new Purchase Item
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String roommateName = mAuth.getCurrentUser().getDisplayName();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String date = sdf.format(new Date());
+
+        Purchase purchase = new Purchase(purchasedItems, total, roommateName, date);
+
+        DatabaseReference myRef = database.getReference("PurchasesList");
+
+        myRef.push().setValue(purchase).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.smoothScrollToPosition(itemsList.size() - 1);
+                    }
+                });
+
+                // Show a quick confirmation
+                Toast.makeText(getActivity(), "purchase added successfully", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Failed to add purchase", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.d("SHOPPING LIST POS", Integer.toString(position));
+        positions.add(position);
+        position++;
     }
 }

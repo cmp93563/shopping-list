@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     Log.d(DEBUG_TAG, "User name: " + mAuth.getCurrentUser().getDisplayName());
 
-                                    Intent intent = new Intent(getApplicationContext(), SplashPage.class);
+                                    Intent intent = new Intent(getApplicationContext(), NavBarActivity.class);
                                     startActivity(intent);
 
                                 } else {

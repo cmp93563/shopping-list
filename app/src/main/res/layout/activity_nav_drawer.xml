@@ -26,7 +26,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
-            android:name="edu.uga.cs.shoppinglist.MainScreen"
+            android:name="edu.uga.cs.shoppinglist.ShoppingListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"

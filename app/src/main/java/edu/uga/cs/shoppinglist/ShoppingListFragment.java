@@ -135,42 +135,42 @@ public class ShoppingListFragment extends Fragment
                         position++;
                     }
                 }
-                int minus = 0;
-                Log.d("SHOPPING LIST ITEMS LIST", itemsList.toString());
-                for (int position : positions) {
-                    ListItem listItem = itemsList.get(position);
-
-                    Log.d(DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")");
-                    try {
-                        itemsList.remove(position);
-                        recyclerAdapter.notifyItemRemoved(position);
-                    } catch (Exception e) {
-                        Log.e("SHOPPING LIST", e.getMessage());
-                    }
-
-
-                    shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            dataSnapshot.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ")");
-                                    Toast.makeText(getActivity(), "item deleted for " + listItem.getItem(),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
-                            Log.d(DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ")");
-                            Toast.makeText(getActivity(), "Failed to delete " + listItem.getItem(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+//                int minus = 0;
+//                Log.d("SHOPPING LIST ITEMS LIST", itemsList.toString());
+//                for (int position : positions) {
+//                    ListItem listItem = itemsList.get(position);
+//
+//                    Log.d(DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")");
+//                    try {
+//                        itemsList.remove(position);
+//                        recyclerAdapter.notifyItemRemoved(position);
+//                    } catch (Exception e) {
+//                        Log.e("SHOPPING LIST", e.getMessage());
+//                    }
+//
+//
+//                    shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            dataSnapshot.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//                                    Log.d(DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ")");
+//                                    Toast.makeText(getActivity(), "item deleted for " + listItem.getItem(),
+//                                            Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//                            Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
+//                            Log.d(DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ")");
+//                            Toast.makeText(getActivity(), "Failed to delete " + listItem.getItem(),
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
             });
         } catch (Exception e) {
             Log.e("SHOPPING LIST ERROR", e.getMessage());

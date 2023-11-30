@@ -13,97 +13,112 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentPurchasesRecyclerAdapter.ListItemHolder>
-        implements Filterable {
+public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentPurchasesRecyclerAdapter.PurchaseItemHolder> {
 
-    public static final String DEBUG_TAG = "RecentPurchasesRecyclerAdapter";
-    public static final String TAG = "RecentPurchasesRecyclerAdapter";
+    public static final String DEBUG_TAG = "RECENT PURCHASES RECYCLER ADAPTER";
 
     private final Context context;
 
-    private List<ListItem> values;
-    private List<ListItem> originalValues;
+    private List<Purchase> values;
+    private List<Purchase> originalValues;
+    private RecyclerView.RecycledViewPool
+            viewPool
+            = new RecyclerView
+            .RecycledViewPool();
 
-    RecentPurchasesFragment hostFragment;
+    private RecentPurchasesFragment hostFragment;
+    private PurchasedItemsRecyclerAdapter recyclerAdapter;
+    private FirebaseDatabase database;
+    RecyclerView recyclerView;
 
-    public RecentPurchasesRecyclerAdapter( Context context, List<ListItem> itemsList, RecentPurchasesFragment hostFragment ) {
+    public RecentPurchasesRecyclerAdapter( Context context, List<Purchase> purchasesList, RecentPurchasesFragment hostFragment ) {
         this.context = context;
-        this.values = itemsList;
-        this.originalValues = new ArrayList<ListItem>( itemsList );
+        this.values = purchasesList;
+        this.originalValues = new ArrayList<Purchase>( purchasesList );
         this.hostFragment = hostFragment;
+        Log.d( DEBUG_TAG, "CONSTRUCTOR" );
     }
 
     // reset the originalValues to the current contents of values
     public void sync()
     {
-        originalValues = new ArrayList<ListItem>( values );
+        originalValues = new ArrayList<Purchase>( values );
     }
 
     // The adapter must have a ViewHolder class to "hold" one item to show.
-    public static class ListItemHolder extends RecyclerView.ViewHolder {
+    public static class PurchaseItemHolder extends RecyclerView.ViewHolder {
+        RecyclerView recyclerView;
+        TextView purchaseBy;
+        TextView totalCost;
 
-        TextView itemName;
-        TextView price;
-        Button checkout;
-
-        public ListItemHolder( View itemView ) {
+        public PurchaseItemHolder( View itemView ) {
             super( itemView );
+            Log.d( DEBUG_TAG, "PURCHASE ITEM HOLDER" );
 
-            itemName = itemView.findViewById( R.id.itemName );
-            checkout = itemView.findViewById( R.id.addToCart );
+            recyclerView = itemView.findViewById( R.id.recyclerViewItems );
+            purchaseBy = itemView.findViewById( R.id.purchaseBy );
+            totalCost = itemView.findViewById( R.id.totalCost );
         }
     }
 
     @NonNull
     @Override
-    public RecentPurchasesRecyclerAdapter.ListItemHolder onCreateViewHolder(ViewGroup parent, int viewType ) {
-        // We need to make sure that all CardViews have the same, full width, allowed by the parent view.
-        // This is a bit tricky, and we must provide the parent reference (the second param of inflate)
-        // and false as the third parameter (don't attach to root).
-        // Consequently, the parent view's (the RecyclerView) width will be used (match_parent).
-        View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.list_item, parent, false );
-        return new RecentPurchasesRecyclerAdapter.ListItemHolder( view );
+    public RecentPurchasesRecyclerAdapter.PurchaseItemHolder onCreateViewHolder(ViewGroup parent, int viewType ) {
+        View view = LayoutInflater.from( parent.getContext()).inflate( R.layout.purchase, parent, false );
+        return new RecentPurchasesRecyclerAdapter.PurchaseItemHolder( view );
     }
 
     // This method fills in the values of a holder to show an item.
     // The position parameter indicates the position on the list of items.
     @Override
-    public void onBindViewHolder(RecentPurchasesRecyclerAdapter.ListItemHolder holder, int position ) {
+    public void onBindViewHolder(RecentPurchasesRecyclerAdapter.PurchaseItemHolder holder, int position ) {
+        Purchase purchase = values.get( position );
+        Log.d( DEBUG_TAG, "onBindViewHolder: " + purchase );
+        String key = purchase.getKey();
+        holder.purchaseBy.setText( "Purchase by: " + purchase.getRoommate());
+        holder.totalCost.setText( "Total cost: $" + purchase.getTotal());
 
-        ListItem listItem = values.get( position );
+        List<ListItem> itemsList = new ArrayList<>();
 
-        Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem );
-
-        String key = listItem.getKey();
-        String item = listItem.getItem();
-        String price = "0";
-
-        holder.itemName.setText( listItem.getItem());
-//        holder.price.setText( "0" );
-
-        holder.checkout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("RP RECYCLER", "CHECKOUT CLICKED");
-                try {
-                    EditPurchaseDialogFragment newFragment = new EditPurchaseDialogFragment();
-                    newFragment.setHostFragment(hostFragment);
-                    Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
-                    Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-                    EditPurchaseDialogFragment editItemFragment =
-                            EditPurchaseDialogFragment.newInstance( holder.getAdapterPosition(), key, item, price );
-                    editItemFragment.setHostFragment(hostFragment);
-                    editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
-                } catch (Exception e) {
-                    Log.e("RECENT PURCHASES", e.getMessage());
-                }
-            }
-        });
+        // use a linear layout manager for the recycler view
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(
+                holder
+                        .recyclerView
+                        .getContext(),
+                LinearLayoutManager.VERTICAL,
+                false);
+        layoutManager
+                .setInitialPrefetchItemCount(
+                        purchase
+                                .getItems()
+                                .size());
+        holder.recyclerView.setLayoutManager(layoutManager);
+        PurchasedItemsRecyclerAdapter childItemAdapter
+                = new PurchasedItemsRecyclerAdapter(purchase.getItems());
+        holder
+                .recyclerView
+                .setLayoutManager(layoutManager);
+        holder
+                .recyclerView
+                .setAdapter(childItemAdapter);
+        holder
+                .recyclerView
+                .setRecycledViewPool(viewPool);
     }
 
     @Override
@@ -112,48 +127,5 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
             return values.size();
         else
             return 0;
-    }
-
-    @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
-
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                List<ListItem> list = new ArrayList<ListItem>( originalValues );
-                FilterResults filterResults = new FilterResults();
-                if(constraint == null || constraint.length() == 0) {
-                    filterResults.count = list.size();
-                    filterResults.values = list;
-                }
-                else{
-                    List<ListItem> resultsModel = new ArrayList<>();
-                    String searchStr = constraint.toString().toLowerCase();
-
-                    for( ListItem listItem : list ) {
-                        // check if either the company name or the comments contain the search string
-                        if( listItem.getItem().toLowerCase().contains( searchStr )) {
-                            resultsModel.add( listItem );
-                        }
-                    }
-
-                    filterResults.count = resultsModel.size();
-                    filterResults.values = resultsModel;
-                }
-
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                values = (ArrayList<ListItem>) results.values;
-                notifyDataSetChanged();
-                if( values.size() == 0 ) {
-                    Toast.makeText( context, "Not Found", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        };
-        return filter;
     }
 }

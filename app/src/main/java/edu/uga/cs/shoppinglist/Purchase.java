@@ -7,6 +7,7 @@ import java.util.List;
 public class Purchase {
 
     //how to reference items purchased?
+    private String key;
     private List<ListItem> items;
     private double total;
     private String roommate;
@@ -28,6 +29,9 @@ public class Purchase {
     }
 
     // getters and setters
+    public String getKey() {
+        return key;
+    }
     public List<ListItem> getItems() {
         return items;
     }
@@ -42,6 +46,10 @@ public class Purchase {
 
     public String getDate() {
         return date;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void setItems(List<ListItem> items) {

@@ -43,7 +43,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/editBtn"
                     android:layout_width="62dp"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#EA97E2"
@@ -54,18 +54,6 @@
                     android:text="Edit"
                     android:textColor="#000000"
                     android:textSize="20sp" />
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="#FFFFFF"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="0dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="0dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/delete_btn" />
 
             </LinearLayout>
 

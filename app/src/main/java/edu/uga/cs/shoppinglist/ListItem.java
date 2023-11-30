@@ -7,44 +7,37 @@ public class ListItem {
 
     private String key;
     private String item;
-    private double price;
+    //private double price;
     private boolean purchased;
     private boolean inCart;
 
     public ListItem() {
         this.item = null;
-        this.price = -1;
         this.purchased = false;
         this.inCart = false;
     }
 
-    public ListItem(String item) {
+    public ListItem(String item, boolean purchased, boolean inCart) {
         this.item = item;
-        this.price = -1;
         this.purchased = false;
         this.inCart = false;
     }
-
+/*
     public ListItem(String item, double price) {
         this.item = item;
-        this.price = price;
+        //this.price = price;
         this.purchased = false;
         this.inCart = false;
     }
 
-    public ListItem(String item, double price, boolean purchased) {
+    public ListItem(String item, boolean purchased) {
         this.item = item;
-        this.price = price;
         this.purchased = purchased;
         this.inCart = false;
-    }
+    }*/
 
     public String getItem() {
         return item;
-    }
-
-    public double getPrice() {
-        return price;
     }
 
     public boolean getPurchased() {
@@ -61,10 +54,6 @@ public class ListItem {
         this.item = item;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public void setPurchased(boolean purchased) {
         this.purchased = purchased;
     }
@@ -76,6 +65,4 @@ public class ListItem {
     public void setInCart(boolean inCart) {
         this.inCart = inCart;
     }
-
-    // getter and setter methods
 }

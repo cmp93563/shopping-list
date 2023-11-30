@@ -56,12 +56,12 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         final View layout = inflater.inflate(R.layout.fragment_edit_purchase_dialog, getActivity().findViewById(R.id.root));
 
         itemView = layout.findViewById(R.id.item);
-        priceView = layout.findViewById(R.id.price);
+        //priceView = layout.findViewById(R.id.price);
 
         // Pre-fill the edit texts with the current values for this item.
         // The user will be able to modify them.
         itemView.setText(item);
-        priceView.setText(price);
+        //priceView.setText(price);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
         builder.setView(layout);
@@ -93,7 +93,7 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         public void onClick(DialogInterface dialog, int which) {
             String itemName = itemView.getText().toString();
             String price = priceView.getText().toString();
-            ListItem listItem = new ListItem(itemName, Double.parseDouble(price));
+            ListItem listItem = new ListItem(itemName, false, false);
             listItem.setKey(key);
             hostFragment.updateItem(position, listItem, SAVE);
             dismiss();
@@ -104,7 +104,7 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
 
-            ListItem listItem = new ListItem(item, Double.parseDouble(price));
+            ListItem listItem = new ListItem(item, false, false);
             listItem.setKey(key);
             hostFragment.updateItem(position, listItem, DELETE);
             dismiss();

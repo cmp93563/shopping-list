@@ -61,9 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, "Login successful.",
                                             Toast.LENGTH_SHORT).show();
 
-                                    Log.d(DEBUG_TAG, "User name: " + mAuth.getCurrentUser().getDisplayName());
-
-                                    Intent intent = new Intent(getApplicationContext(), NavBarActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), NavDrawerActivity.class);
                                     startActivity(intent);
 
                                 } else {

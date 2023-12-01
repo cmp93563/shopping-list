@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,6 +117,8 @@ public class ShoppingListRecyclerAdapter
             public void onClick(View v) {
                 if (holder.checkout.getText().equals("Add To Cart")) {
                     holder.checkout.setText("Remove From Cart");
+                    // change color?
+                    //holder.checkout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DA55CC")));
                     listItem.setInCart(true);
                     try {
                         /*

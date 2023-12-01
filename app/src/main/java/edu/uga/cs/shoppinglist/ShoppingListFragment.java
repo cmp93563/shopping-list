@@ -107,96 +107,7 @@ public class ShoppingListFragment extends Fragment
                 CheckoutDialogFragment newFragment = new CheckoutDialogFragment();
                 newFragment.setHostFragment(ShoppingListFragment.this);
                 newFragment.show(getParentFragmentManager(), null);
-                /*
-                List<Integer> positions = new ArrayList<>();
-
-                purchasedItems = new ArrayList<>();
-
-                for (ListItem li : itemsList) {
-                    if (li.getInCart()) {
-                        li.setPurchased(true);
-
-                        // add purchased item to array list
-                        purchasedItems.add(li);
-
-                    } // if
-                } // for
-
-                //create new Purchase Item
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                String roommateName = mAuth.getCurrentUser().getDisplayName();
-
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String date = sdf.format(new Date());
-
-                Purchase purchase = new Purchase(purchasedItems,-1,roommateName,date);
-
-
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("PurchasesList");
-
-                myRef.push().setValue(purchase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        recyclerView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerView.smoothScrollToPosition(itemsList.size() - 1);
-                            }
-                        });
-
-                        // Show a quick confirmation
-                        Toast.makeText(getActivity(), "purchase added successfully", Toast.LENGTH_SHORT).show();
-                        }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Failed to add purchase", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Log.d("SHOPPING LIST POS", Integer.toString(position));
-                positions.add(position);
-                position++;
-
-
-//                int minus = 0;
-//                Log.d("SHOPPING LIST ITEMS LIST", itemsList.toString());
-//                for (int position : positions) {
-//                    ListItem listItem = itemsList.get(position);
-//
-//                    Log.d(DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getItem() + ")");
-//                    try {
-//                        itemsList.remove(position);
-//                        recyclerAdapter.notifyItemRemoved(position);
-//                    } catch (Exception e) {
-//                        Log.e("SHOPPING LIST", e.getMessage());
-//                    }
-//
-//
-//                    shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            dataSnapshot.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                    Log.d(DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getItem() + ")");
-//                                    Toast.makeText(getActivity(), "item deleted for " + listItem.getItem(),
-//                                            Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//                            Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
-//                            Log.d(DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getItem() + ")");
-//                            Toast.makeText(getActivity(), "Failed to delete " + listItem.getItem(),
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
-//                */
-            }); // checkout listener
+            });
         } catch (Exception e) {
             Log.e("SHOPPING LIST ERROR", e.getMessage());
         }
@@ -208,11 +119,6 @@ public class ShoppingListFragment extends Fragment
                 .getReference()
                 .child("ShoppingList")
                 .child(listItem.getKey());
-
-//        DatabaseReference purchaseRef = database
-//                .getReference()
-//                .child( "Cart" )
-//                .child( listItem.getKey() );
         if (action == EditItemDialogFragment.SAVE && !listItem.getInCart()) {
             Log.d(DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")");
 

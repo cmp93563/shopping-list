@@ -65,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
 
                                 } else {
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    //Log.d(DEBUG_TAG, "login failed: " + task.getException().getMessage());
+                                    Toast.makeText(LoginActivity.this, "Incorrect email or password.",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }

@@ -13,11 +13,14 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -29,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editTextCon;
     private Button regBtn;
     private FirebaseAuth mAuth;
+    private DatabaseReference db;
 
     String name, email, password, conPassword;
 
@@ -80,13 +84,22 @@ public class RegisterActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             });
+                                    // push name to users list
+                                    db = FirebaseDatabase.getInstance().getReference("Users");
+                                    db.push().setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Log.d(DEBUG_TAG, "name pushed to DB");
+                                        }
+                                    });
+
 
                                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                     startActivity(intent);
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(RegisterActivity.this, "Email already in use.",
+                                    Log.w(DEBUG_TAG, "createUserWithEmail:failure", task.getException());
+                                    Toast.makeText(RegisterActivity.this, "Error: " +task.getException().getMessage(),
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }

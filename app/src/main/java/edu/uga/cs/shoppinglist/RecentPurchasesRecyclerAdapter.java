@@ -88,7 +88,7 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
     public void onBindViewHolder(RecentPurchasesRecyclerAdapter.PurchaseItemHolder holder, int position ) {
         Purchase purchase = values.get( position );
         Log.d( DEBUG_TAG, "onBindViewHolder: " + purchase );
-        String key = purchase.getKey();
+//        String key = purchase.getKey();
         holder.purchaseBy.setText( "Purchase by: " + purchase.getRoommate());
         holder.totalCost.setText( "Total cost: $" + purchase.getTotal());
 

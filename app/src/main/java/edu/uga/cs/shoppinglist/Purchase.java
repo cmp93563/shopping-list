@@ -29,6 +29,7 @@ public class Purchase {
     }
 
     // getters and setters
+
     public String getKey() {
         return key;
     }

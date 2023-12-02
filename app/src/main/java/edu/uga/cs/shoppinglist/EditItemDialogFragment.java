@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -68,7 +67,7 @@ public class EditItemDialogFragment extends DialogFragment {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.fragment_edit_purchase_dialog, getActivity().findViewById(R.id.root));
 
-        itemView = layout.findViewById(R.id.item);
+        itemView = layout.findViewById(R.id.total);
         //priceView = layout.findViewById(R.id.price);
 
         // Pre-fill the edit texts with the current values for this list item.

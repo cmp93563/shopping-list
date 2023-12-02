@@ -82,19 +82,7 @@ public class RecentPurchasesFragment extends Fragment {
                     Purchase purchase = postSnapshot.getValue(Purchase.class);
                     purchase.setKey(postSnapshot.getKey());
                     purchasesList.add(purchase);
-                    for (ListItem li : purchase.getItems()) {
-                        Log.d("RECENT PURCHASES FRAGMENT", li.getItem());
-                    }
                 }
-//                itemsList.clear(); // clear the current content; this is inefficient!
-//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                    Purchase purchase = postSnapshot.getValue(Purchase.class);
-//                    purchase.setKey(postSnapshot.getKey());
-//                    for (ListItem li : purchase.getItems()) {
-//                        itemsList.add(li);
-//                    }
-//                }
-
                 recyclerAdapter.notifyDataSetChanged();
             }
 
@@ -103,12 +91,5 @@ public class RecentPurchasesFragment extends Fragment {
                 System.out.println("ValueEventListener: reading failed: " + databaseError.getMessage());
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recent_purchases, container, false);
     }
 }

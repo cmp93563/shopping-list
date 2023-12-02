@@ -209,10 +209,6 @@ public class ShoppingListFragment extends Fragment
                 .child("ShoppingList")
                 .child(listItem.getKey());
 
-//        DatabaseReference purchaseRef = database
-//                .getReference()
-//                .child( "Cart" )
-//                .child( listItem.getKey() );
         if (action == EditItemDialogFragment.SAVE && !listItem.getInCart()) {
             Log.d(DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getItem() + ")");
 

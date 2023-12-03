@@ -91,25 +91,22 @@ public class RecentPurchasesFragment extends Fragment {
     }
 
     public void updateItem(int position, Purchase listItem, int action) {
-        DatabaseReference shoppingListRef = database
-                .getReference()
-                .child("PurchasesList")
-                .child(listItem.getKey());
+        DatabaseReference shoppingListRef = database.getReference("ShoppingList");
+        DatabaseReference purchaseListRef = database.getReference().child("PurchasesList").child(listItem.getKey());
 
-        if (action == EditItemDialogFragment.SAVE ) {
+        if (action == EditItemDialogFragment.SAVE) {
             Log.d(DEBUG_TAG, "Updating item at: " + position + "(" + listItem.getTotal() + ")");
 
             // Update the recycler view to show the changes in the updated item in that view
             recyclerAdapter.notifyItemChanged(position);
-            shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            purchaseListRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     dataSnapshot.getRef().setValue(listItem).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(DEBUG_TAG, "updated item at: " + position + "(" + listItem.getTotal() + ")");
-                            Toast.makeText(getActivity(), listItem.getTotal() + " updated",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), listItem.getTotal() + " updated", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -117,69 +114,68 @@ public class RecentPurchasesFragment extends Fragment {
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.d(DEBUG_TAG, "failed to update item at: " + position + "(" + listItem.getItems() + ")");
-                    Toast.makeText(getActivity(), "Failed to update " + listItem.getItems(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else if (action == EditItemDialogFragment.SAVE) {
-            // Update the recycler view to show the changes in the updated item in that view
-            recyclerAdapter.notifyItemChanged(position);
-            shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    dataSnapshot.getRef().setValue(listItem).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(DEBUG_TAG, "updated item at: " + position + "(" + listItem.getTotal() + ")");
-                            Toast.makeText(getActivity(), listItem.getTotal() + " updated",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d(DEBUG_TAG, "failed to update item at: " + position + "(" + listItem.getTotal() + ")");
-                    Toast.makeText(getActivity(), "Failed to update " + listItem.getTotal(),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Failed to update " + listItem.getItems(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (action == EditItemDialogFragment.DELETE) {
-            Log.d(DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getTotal() + ")");
-            try {
-                purchasesList.remove(position);
-                recyclerAdapter.notifyItemRemoved(position);
-            } catch (Exception e) {
-                Log.e("SHOPPING LIST", e.getMessage());
+            List<ListItem> jobLeadsList = listItem.getItems();
+            for (ListItem jobLead : jobLeadsList) {
+                jobLead.setInCart(false);
+                jobLead.setPurchased(false);
+                shoppingListRef.push().setValue(jobLead).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.smoothScrollToPosition(jobLeadsList.size() - 1);
+                            }
+                        });
+
+                        Log.d(DEBUG_TAG, "Job lead saved: " + jobLead);
+                        // Show a quick confirmation
+                        Toast.makeText(getActivity(), "Job lead created for " + jobLead.getItem(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Failed to create a Job lead for " + jobLead.getItem(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        Log.d(DEBUG_TAG, "Deleting item at: " + position + "(" + listItem.getTotal() + ")");
+        try {
+            purchasesList.remove(position);
+            recyclerAdapter.notifyItemRemoved(position);
+        } catch (Exception e) {
+            Log.e("SHOPPING LIST", e.getMessage());
+        }
+        purchaseListRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getTotal() + ")");
+                        Toast.makeText(getActivity(), "item deleted for " + listItem.getTotal(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
-
-            shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    dataSnapshot.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(DEBUG_TAG, "deleted item at: " + position + "(" + listItem.getTotal() + ")");
-                            Toast.makeText(getActivity(), "item deleted for " + listItem.getTotal(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
-                    Log.d(DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getTotal() + ")");
-                    Toast.makeText(getActivity(), "Failed to delete " + listItem.getTotal(),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(DEBUG_TAG, "onCancelled", databaseError.toException());
+                Log.d(DEBUG_TAG, "failed to delete item at: " + position + "(" + listItem.getTotal() + ")");
+                Toast.makeText(getActivity(), "Failed to delete " + listItem.getTotal(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recent_purchases, container, false);
     }

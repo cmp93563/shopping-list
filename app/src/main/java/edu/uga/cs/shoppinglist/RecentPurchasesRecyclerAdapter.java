@@ -160,8 +160,8 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d( DEBUG_TAG, "updated job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-//                            Toast.makeText(getActivity(), "Job lead updated for " + total,
-//                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(hostFragment.getActivity(), "Job lead updated for " + jobLead.getTotal(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -169,8 +169,8 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
                     Log.d( DEBUG_TAG, "failed to update job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-//                    Toast.makeText(getActivity(), "Failed to update " + total,
-//                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(hostFragment.getActivity(), "Failed to update " + jobLead.getTotal(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -192,8 +192,8 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-//                            Toast.makeText(getApplicationContext(), "Job lead deleted for " + total,
-//                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(hostFragment.getActivity(), "Job lead deleted for " + jobLead.getTotal(),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -201,8 +201,8 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
                     Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-//                    Toast.makeText(getApplicationContext(), "Failed to delete " + total,
-//                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(hostFragment.getActivity(), "Failed to delete " + jobLead.getTotal(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         }

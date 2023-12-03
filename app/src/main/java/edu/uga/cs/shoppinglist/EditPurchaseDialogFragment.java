@@ -57,7 +57,7 @@ public class EditPurchaseDialogFragment extends DialogFragment {
 
         key = getArguments().getString("key");
         position = getArguments().getInt("position");
-        total = getArguments().getString("item");
+        total = getArguments().getString("total");
         itemsList = getArguments().getParcelableArrayList("itemsList");
         roommate = getArguments().getString("roommate");
         date = getArguments().getString("date");
@@ -118,6 +118,11 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             Purchase purchase = new Purchase();
+            purchase.setKey(key);
+            purchase.setItems(itemsList);
+            purchase.setRoommate(roommate);
+            purchase.setDate(date);
+            purchase.setTotal(Double.parseDouble(total));
             hostFragment.updateItem(position, purchase, DELETE);
             dismiss();
         }

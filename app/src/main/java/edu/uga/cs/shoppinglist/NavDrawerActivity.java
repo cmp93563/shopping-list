@@ -6,12 +6,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
@@ -74,17 +79,26 @@ public class NavDrawerActivity extends AppCompatActivity {
         } else if (menuItem.getItemId() == R.id.menu_settle) {
             fragment = new SettleCostFragment();
         } else if (menuItem.getItemId() == R.id.menu_close) {
-            fragment = new ShoppingListFragment();
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth.signOut();
+
+            // Use getContext() instead of getApplicationContext() if this code is within a fragment
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         } else return;
-        // Set up the fragment by replacing any existing fragment in the main activity
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace( R.id.fragmentContainerView, fragment).addToBackStack("main screen" ).commit();
 
-        menuItem.setChecked( true );
-        setTitle( menuItem.getTitle());
 
-        // Close the navigation drawer
-        drawerLayout.closeDrawers();
+        // Replace the current fragment with the selected one
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, fragment).addToBackStack("main screen").commit();
+
+            menuItem.setChecked(true);
+            setTitle(menuItem.getTitle());
+
+            // Close the navigation drawer
+            drawerLayout.closeDrawers();
+        }
 
     }
 

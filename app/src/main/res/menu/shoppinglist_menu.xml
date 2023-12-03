@@ -27,7 +27,7 @@
             android:id="@+id/menu_close"
             android:icon="@drawable/ic_baseline_close_24"
             android:orderInCategory="4"
-            android:title="Close App"
+            android:title="Log Out"
             app:showAsAction="ifRoom|withText" />
 
     </group>

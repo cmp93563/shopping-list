@@ -276,7 +276,7 @@ public class ShoppingListFragment extends Fragment
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        recyclerView.smoothScrollToPosition(itemsList.size() - 1);
+                        if (itemsList.size() > 1) recyclerView.smoothScrollToPosition(itemsList.size() - 1);
                     }
                 });
 

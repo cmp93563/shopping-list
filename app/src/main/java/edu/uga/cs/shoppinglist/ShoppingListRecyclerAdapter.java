@@ -118,7 +118,7 @@ public class ShoppingListRecyclerAdapter
                 if (holder.checkout.getText().equals("Add To Cart")) {
                     holder.checkout.setText("Remove From Cart");
                     // change color?
-                    //holder.checkout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DA55CC")));
+                    // holder.checkout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DA55CC")));
                     listItem.setInCart(true);
                     try {
                         /*

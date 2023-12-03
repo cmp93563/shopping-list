@@ -114,7 +114,7 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                                 .size());
         holder.recyclerView.setLayoutManager(layoutManager);
         PurchasedItemsRecyclerAdapter childItemAdapter
-                = new PurchasedItemsRecyclerAdapter(purchase.getItems());
+                = new PurchasedItemsRecyclerAdapter(purchase.getItems(), hostFragment, roommate, date, key, Double.toString(total));
         holder
                 .recyclerView
                 .setLayoutManager(layoutManager);

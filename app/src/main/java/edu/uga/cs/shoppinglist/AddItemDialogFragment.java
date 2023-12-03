@@ -6,15 +6,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import java.util.List;
 
 // A DialogFragment class to handle item additions from the item review activity
 // It uses a DialogFragment to allow the input of a new item.
@@ -73,7 +69,7 @@ public class AddItemDialogFragment extends DialogFragment {
         }
     }
 
-    public void setHostFragment( ShoppingListFragment hostFragment )
+    public void setHostFragment(ShoppingListFragment hostFragment )
     {
         this.hostFragment = hostFragment;
     }

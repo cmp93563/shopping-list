@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditPurchaseDialogFragment extends DialogFragment {
@@ -25,10 +27,13 @@ public class EditPurchaseDialogFragment extends DialogFragment {
     int position;     // the position of the edited ListItem on the list of items
     String key;
     String total;
+    List<ListItem> itemsList;
+    String roommate;
+    String date;
 
     private RecentPurchasesFragment hostFragment;
     public interface EditPurchaseDialogListener {
-        void updateItem(int position, String string, int action);
+        void updateItem(int position, Purchase purchase, int action);
     }
 
     public static EditPurchaseDialogFragment newInstance(int position, String key, List<ListItem> itemsList, String total, String roommate, String date) {
@@ -37,7 +42,7 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         Bundle args = new Bundle();
         args.putString("key", key);
         args.putInt("position", position);
-//        args.putStringArrayList("itemsList", itemsList);
+        args.putParcelableArrayList("itemsList", new ArrayList<>(itemsList));
         args.putString("date", date);
         args.putString("total", total);
         args.putString("roommate", roommate);
@@ -53,6 +58,10 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         key = getArguments().getString("key");
         position = getArguments().getInt("position");
         total = getArguments().getString("item");
+        itemsList = getArguments().getParcelableArrayList("itemsList");
+        roommate = getArguments().getString("roommate");
+        date = getArguments().getString("date");
+
 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.fragment_edit_purchase_dialog, getActivity().findViewById(R.id.root));
@@ -69,7 +78,7 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         builder.setView(layout);
 
         // Set the title of the AlertDialog
-        builder.setTitle("Edit Item");
+        builder.setTitle("Edit Purchase");
 
         // The Cancel button handler
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -94,20 +103,22 @@ public class EditPurchaseDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             String total = costView.getText().toString();
-//            Purchase purchase = new Purchase(itemName, false, false);
-//            listItem.setKey(key);
-            hostFragment.updateItem(position, total, SAVE);
-//            dismiss();
+            Purchase purchase = new Purchase();
+            purchase.setKey(key);
+            purchase.setItems(itemsList);
+            purchase.setRoommate(roommate);
+            purchase.setDate(date);
+            purchase.setTotal(Double.parseDouble(total));
+            hostFragment.updateItem(position, purchase, SAVE);
+            dismiss();
         }
     }
 
     private class DeleteButtonClickListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-//            Purchase purchase = new Purchase();
-//            ListItem listItem = new ListItem(item, false, false);
-//            listItem.setKey(key);
-            hostFragment.updateItem(position, total, DELETE);
+            Purchase purchase = new Purchase();
+            hostFragment.updateItem(position, purchase, DELETE);
             dismiss();
         }
     }

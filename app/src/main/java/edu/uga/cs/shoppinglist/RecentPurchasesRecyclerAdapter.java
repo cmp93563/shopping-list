@@ -92,10 +92,12 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
         Purchase purchase = values.get( position );
         Log.d( DEBUG_TAG, "onBindViewHolder: " + purchase );
         String key = purchase.getKey();
-        holder.purchaseBy.setText( "Purchase by: " + purchase.getRoommate());
-        holder.totalCost.setText( "Total cost: $" + purchase.getTotal());
-
-        List<ListItem> itemsList = new ArrayList<>();
+        List<ListItem> itemsList = purchase.getItems();
+        Double total = purchase.getTotal();
+        String date = purchase.getDate();
+        String roommate = purchase.getRoommate();
+        holder.purchaseBy.setText( "Purchase by: " + roommate);
+        holder.totalCost.setText( "Total cost: $" + total);
 
         // use a linear layout manager for the recycler view
         LinearLayoutManager layoutManager
@@ -122,38 +124,42 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
         holder
                 .recyclerView
                 .setRecycledViewPool(viewPool);
+
+        holder.purchaseBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditPurchaseDialogFragment newFragment = new EditPurchaseDialogFragment();
+                newFragment.setHostFragment(hostFragment);
+                Log.d( "RECENT PURCHASES RECYCLER ADAPTER", "onBindViewHolder: getItemId: " + holder.getItemId() );
+                EditPurchaseDialogFragment editPurchaseFragment =
+                        EditPurchaseDialogFragment.newInstance( holder.getAdapterPosition(), key, itemsList, Double.toString(total), roommate, date);
+                editPurchaseFragment.setHostFragment(hostFragment);
+                editPurchaseFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
+            }
+        });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recent_purchases, container, false);
-    }
+    public void updateItem( int position, Purchase jobLead, int action ) {
 
-    public void updateItem( int position, String total, int action ) {
+        DatabaseReference ref = database
+                .getReference()
+                .child("PurchasesList")
+                .child(jobLead.getKey());
         if( action == EditPurchaseDialogFragment.SAVE ) {
-            Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + total + ")" );
+            Log.d( DEBUG_TAG, "SAVE" );
+
+            Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + jobLead.getTotal() + ")" );
 
             // Update the recycler view to show the changes in the updated job lead in that view
             recyclerAdapter.notifyItemChanged( position );
 
-            // Update this job lead in Firebase
-            // Note that we are using a specific key (one child in the list)
-            DatabaseReference ref = database
-                    .getReference()
-                    .child( "jobleads" );
-                    .child( jobLead.getKey() );
-
-            // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
             ref.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().setValue( total ).addOnSuccessListener( new OnSuccessListener<Void>() {
+                    dataSnapshot.getRef().setValue( jobLead ).addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "updated job lead at: " + position + "(" + total + ")" );
+                            Log.d( DEBUG_TAG, "updated job lead at: " + position + "(" + jobLead.getTotal() + ")" );
 //                            Toast.makeText(getActivity(), "Job lead updated for " + total,
 //                                    Toast.LENGTH_SHORT).show();
                         }
@@ -162,27 +168,20 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
 
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to update job lead at: " + position + "(" + total + ")" );
+                    Log.d( DEBUG_TAG, "failed to update job lead at: " + position + "(" + jobLead.getTotal() + ")" );
 //                    Toast.makeText(getActivity(), "Failed to update " + total,
 //                            Toast.LENGTH_SHORT).show();
                 }
             });
         }
         else if( action == EditPurchaseDialogFragment.DELETE ) {
-            Log.d( DEBUG_TAG, "Deleting job lead at: " + position + "(" + total + ")" );
+            Log.d( DEBUG_TAG, "Deleting job lead at: " + position + "(" + jobLead.getTotal() + ")" );
 
             // remove the deleted job lead from the list (internal list in the App)
-            purchasesList.remove( position );
+            values.remove( position );
 
             // Update the recycler view to remove the deleted job lead from that view
             recyclerAdapter.notifyItemRemoved( position );
-
-            // Delete this job lead in Firebase.
-            // Note that we are using a specific key (one child in the list)
-            DatabaseReference ref = database
-                    .getReference()
-                    .child( "jobleads" );
-//                    .child( jobLead.getKey() );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
             // to maintain job leads.
@@ -192,7 +191,7 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + total + ")" );
+                            Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + jobLead.getTotal() + ")" );
 //                            Toast.makeText(getApplicationContext(), "Job lead deleted for " + total,
 //                                    Toast.LENGTH_SHORT).show();
                         }
@@ -201,7 +200,7 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
 
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + total + ")" );
+                    Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + jobLead.getTotal() + ")" );
 //                    Toast.makeText(getApplicationContext(), "Failed to delete " + total,
 //                            Toast.LENGTH_SHORT).show();
                 }

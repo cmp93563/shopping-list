@@ -104,15 +104,8 @@ public class EditItemDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             String itemName = itemView.getText().toString();
-            //String price = "";
-            //price = priceView.getText().toString();
             ListItem listItem = new ListItem();
             listItem.setItem(itemName);
-            /*if (price.isEmpty()) listItem.setPrice(-1);
-            else {
-                listItem.setPrice(Double.parseDouble(price));
-                listItem.setInCart(true);
-            }*/
             listItem.setKey(key);
             hostFragment.updateItem(position, listItem, SAVE);
             dismiss();

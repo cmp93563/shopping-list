@@ -3,8 +3,6 @@ package edu.uga.cs.shoppinglist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
  * POJO class to define and create a shopping list item
  */

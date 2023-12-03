@@ -139,28 +139,28 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
         });
     }
 
-    public void updateItem( int position, Purchase jobLead, int action ) {
+    public void updateItem( int position, Purchase purchase, int action ) {
 
         DatabaseReference ref = database
                 .getReference()
                 .child("PurchasesList")
-                .child(jobLead.getKey());
+                .child(purchase.getKey());
         if( action == EditPurchaseDialogFragment.SAVE ) {
             Log.d( DEBUG_TAG, "SAVE" );
 
-            Log.d( DEBUG_TAG, "Updating job lead at: " + position + "(" + jobLead.getTotal() + ")" );
+            Log.d( DEBUG_TAG, "Updating purchase at: " + position + "(" + purchase.getTotal() + ")" );
 
-            // Update the recycler view to show the changes in the updated job lead in that view
+            // Update the recycler view to show the changes in the updated purchase in that view
             recyclerAdapter.notifyItemChanged( position );
 
             ref.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
-                    dataSnapshot.getRef().setValue( jobLead ).addOnSuccessListener( new OnSuccessListener<Void>() {
+                    dataSnapshot.getRef().setValue( purchase ).addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "updated job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-                            Toast.makeText(hostFragment.getActivity(), "Job lead updated for " + jobLead.getTotal(),
+                            Log.d( DEBUG_TAG, "updated purchase at: " + position + "(" + purchase.getTotal() + ")" );
+                            Toast.makeText(hostFragment.getActivity(), "Purchase updated for " + purchase.getTotal(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -168,31 +168,31 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
 
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to update job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-                    Toast.makeText(hostFragment.getActivity(), "Failed to update " + jobLead.getTotal(),
+                    Log.d( DEBUG_TAG, "failed to update purchase at: " + position + "(" + purchase.getTotal() + ")" );
+                    Toast.makeText(hostFragment.getActivity(), "Failed to update " + purchase.getTotal(),
                             Toast.LENGTH_SHORT).show();
                 }
             });
         }
         else if( action == EditPurchaseDialogFragment.DELETE ) {
-            Log.d( DEBUG_TAG, "Deleting job lead at: " + position + "(" + jobLead.getTotal() + ")" );
+            Log.d( DEBUG_TAG, "Deleting purchase at: " + position + "(" + purchase.getTotal() + ")" );
 
-            // remove the deleted job lead from the list (internal list in the App)
+            // remove the deleted purchase from the list (internal list in the App)
             values.remove( position );
 
-            // Update the recycler view to remove the deleted job lead from that view
+            // Update the recycler view to remove the deleted purchase from that view
             recyclerAdapter.notifyItemRemoved( position );
 
             // This listener will be invoked asynchronously, hence no need for an AsyncTask class, as in the previous apps
-            // to maintain job leads.
+            // to maintain purchases.
             ref.addListenerForSingleValueEvent( new ValueEventListener() {
                 @Override
                 public void onDataChange( @NonNull DataSnapshot dataSnapshot ) {
                     dataSnapshot.getRef().removeValue().addOnSuccessListener( new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d( DEBUG_TAG, "deleted job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-                            Toast.makeText(hostFragment.getActivity(), "Job lead deleted for " + jobLead.getTotal(),
+                            Log.d( DEBUG_TAG, "deleted purchase at: " + position + "(" + purchase.getTotal() + ")" );
+                            Toast.makeText(hostFragment.getActivity(), "Purchase deleted for " + purchase.getTotal(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -200,8 +200,8 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
 
                 @Override
                 public void onCancelled( @NonNull DatabaseError databaseError ) {
-                    Log.d( DEBUG_TAG, "failed to delete job lead at: " + position + "(" + jobLead.getTotal() + ")" );
-                    Toast.makeText(hostFragment.getActivity(), "Failed to delete " + jobLead.getTotal(),
+                    Log.d( DEBUG_TAG, "failed to delete purchase at: " + position + "(" + purchase.getTotal() + ")" );
+                    Toast.makeText(hostFragment.getActivity(), "Failed to delete " + purchase.getTotal(),
                             Toast.LENGTH_SHORT).show();
                 }
             });

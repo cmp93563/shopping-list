@@ -23,19 +23,8 @@ public class PurchasedItemsRecyclerAdapter extends RecyclerView.Adapter<Purchase
     public static final String DEBUG_TAG = "PurchasedItemsRecyclerAdapter";
     public static final String TAG = "PurchasedItemsRecyclerAdapter";
 
-//    private final Context context;
-
     private List<ListItem> values;
     private List<ListItem> originalValues;
-
-//    RecentPurchasesFragment hostFragment;
-
-//    public PurchasedItemsRecyclerAdapter(Context context, List<ListItem> itemsList, RecentPurchasesFragment hostFragment ) {
-//        this.context = context;
-//        this.values = itemsList;
-//        this.originalValues = new ArrayList<ListItem>( itemsList );
-//        this.hostFragment = hostFragment;
-//    }
 
     public PurchasedItemsRecyclerAdapter(List<ListItem> itemsList ) {
         this.values = itemsList;

@@ -75,7 +75,6 @@
                 android:layout_marginBottom="25dp"
                 android:background="#EAB9E5"
                 android:padding="15dp"
-                android:text=" $          "
                 android:textColor="#000000"
                 android:textSize="28sp"
                 android:minWidth="50dp"/>

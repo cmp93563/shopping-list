@@ -18,8 +18,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
+/**
+ * This activity displays the nav drawer
+ */
 public class NavDrawerActivity extends AppCompatActivity {
-
 
     public static final String TAG = "ShoppingList";
 
@@ -64,6 +66,10 @@ public class NavDrawerActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method handles the selection of the items on the menu
+     * @param menuItem
+     */
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
 
@@ -99,9 +105,11 @@ public class NavDrawerActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method handles the opening and closing of the nav drawer
+     * @return
+     */
     private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
         return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
     }
 }

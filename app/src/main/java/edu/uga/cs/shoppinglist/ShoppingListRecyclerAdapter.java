@@ -35,6 +35,13 @@ public class ShoppingListRecyclerAdapter
 
     ShoppingListFragment hostFragment;
 
+    /**
+     * This method sets the values of the shopping list
+     * @param context
+     * @param itemsList
+     * @param hostFragment
+     */
+
     public ShoppingListRecyclerAdapter( Context context, List<ListItem> itemsList, ShoppingListFragment hostFragment ) {
         this.context = context;
         this.values = itemsList;
@@ -52,7 +59,6 @@ public class ShoppingListRecyclerAdapter
     public static class ItemHolder extends RecyclerView.ViewHolder {
 
         TextView itemName;
-        //String price;
         Button checkout;
         Button editBtn;
 
@@ -80,11 +86,9 @@ public class ShoppingListRecyclerAdapter
         ListItem listItem = values.get( position );
 
         Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem );
-        //Log.d( DEBUG_TAG, "onBindViewHolder: " + listItem.getPrice() );
 
         String key = listItem.getKey();
         String item = listItem.getItem();
-        //String price = Double.toString(listItem.getPrice());
 
         holder.itemName.setText( listItem.getItem());
         if (listItem.getInCart()) holder.checkout.setText("Remove From Cart");
@@ -110,23 +114,7 @@ public class ShoppingListRecyclerAdapter
             public void onClick(View v) {
                 if (holder.checkout.getText().equals("Add To Cart")) {
                     holder.checkout.setText("Remove From Cart");
-                    // change color?
-                    // holder.checkout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DA55CC")));
                     listItem.setInCart(true);
-                    try {
-                        /*
-                        EditItemDialogFragment newFragment = new EditItemDialogFragment();
-                        newFragment.setHostFragment(hostFragment);
-                        Log.d( TAG, "onBindViewHolder: getItemId: " + holder.getItemId() );
-                        Log.d( TAG, "onBindViewHolder: getAdapterPosition: " + holder.getAdapterPosition() );
-                        EditItemDialogFragment editItemFragment =
-                                EditItemDialogFragment.newInstance( holder.getAdapterPosition(), key, item);
-                        editItemFragment.setHostFragment(hostFragment);
-                        editItemFragment.show( ((AppCompatActivity)context).getSupportFragmentManager(), null);
-                        */
-                    } catch (Exception e) {
-                        Log.e("RECENT PURCHASES", e.getMessage());
-                    }
                 } else {
                     listItem.setInCart(false);
                     //listItem.setPrice(-1);
@@ -138,6 +126,10 @@ public class ShoppingListRecyclerAdapter
         });
     }
 
+    /**
+     * Retrieves the number of items in the shopping list
+     * @return Number of items in the shopping list
+     */
     @Override
     public int getItemCount() {
         if( values != null )

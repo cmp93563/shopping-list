@@ -22,6 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This adapter displays the items on each purchase and is used by the RecentPurchasesRecyclerAdapter
+ */
 public class PurchasedItemsRecyclerAdapter extends RecyclerView.Adapter<PurchasedItemsRecyclerAdapter.ListItemHolder> {
 
     public static final String DEBUG_TAG = "PurchasedItemsRecyclerAdapter";
@@ -37,6 +40,15 @@ public class PurchasedItemsRecyclerAdapter extends RecyclerView.Adapter<Purchase
     private String key;
 
 
+    /**
+     * This constructor sets all of the values in this clas
+     * @param itemsList list of items
+     * @param hostFragment host fragment
+     * @param roommate roommate who completed the purchase
+     * @param date the date of the purchase
+     * @param key the ID of the purchase
+     * @param total the total cost of the purchase
+     */
     public PurchasedItemsRecyclerAdapter(List<ListItem> itemsList, RecentPurchasesFragment hostFragment, String roommate, String date, String key, String total) {
         this.values = itemsList;
         this.total = total;
@@ -164,6 +176,10 @@ public class PurchasedItemsRecyclerAdapter extends RecyclerView.Adapter<Purchase
         });
     }
 
+    /**
+     * This class retrieves the number of items in this purchase
+     * @return
+     */
     @Override
     public int getItemCount() {
         if (values != null) return values.size();

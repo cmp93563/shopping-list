@@ -23,6 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This adapter uses the PurchasedItemsRecyclerAdapter to display all recent purchases
+ */
 public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentPurchasesRecyclerAdapter.PurchaseItemHolder>
         implements EditPurchaseDialogFragment.EditPurchaseDialogListener {
 
@@ -133,6 +136,12 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
         });
     }
 
+    /**
+     * This method updates the items in each purchase group
+     * @param position
+     * @param purchase
+     * @param action
+     */
     public void updateItem( int position, Purchase purchase, int action ) {
 
         DatabaseReference ref = database
@@ -202,6 +211,10 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
         }
     }
 
+    /**
+     * This method retrieves the number of purchases
+     * @return number of purchases
+     */
     @Override
     public int getItemCount() {
         if( values != null )

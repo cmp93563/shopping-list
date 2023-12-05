@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Fragment that shows the settle cost page
  */
 public class SettleCostFragment extends Fragment {
 

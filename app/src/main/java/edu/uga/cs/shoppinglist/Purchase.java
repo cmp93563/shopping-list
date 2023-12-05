@@ -2,6 +2,9 @@ package edu.uga.cs.shoppinglist;
 
 import java.util.List;
 
+/**
+ * POJO class for purchase
+ */
 public class Purchase {
 
     //how to reference items purchased?

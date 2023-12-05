@@ -20,6 +20,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * This activity registers the user and validates the values the user inputs
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private String DEBUG_TAG = "RegisterActivity";
@@ -47,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextCon = findViewById(R.id.editTextConfirm);
         regBtn = findViewById(R.id.button2);
 
+        // registers user and validates input values
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

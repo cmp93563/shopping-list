@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Fragment that displays the actual shopping list
+ */
 public class ShoppingListFragment extends Fragment
         implements AddItemDialogFragment.AddListItemDialogListener,
         EditItemDialogFragment.EditItemDialogListener {
@@ -235,6 +238,10 @@ public class ShoppingListFragment extends Fragment
         });
     }
 
+    /**
+     * Adds a new purchase
+     * @param total total cost of purchase
+     */
     public void addPurchase(double total) {
         List<Integer> positions = new ArrayList<>();
 

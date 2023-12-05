@@ -23,6 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This fragment displays the recent purchases list
+ */
 public class RecentPurchasesFragment extends Fragment {
 
     public static final String DEBUG_TAG = "RECENT PURCHASES FRAGMENT";
@@ -83,6 +86,12 @@ public class RecentPurchasesFragment extends Fragment {
         });
     }
 
+    /**
+     * This method handles changes and deletions of the specific purchase
+     * @param position
+     * @param purchase
+     * @param action
+     */
     public void updateItem(int position, Purchase purchase, int action) {
         DatabaseReference shoppingListRef = database.getReference("ShoppingList");
         DatabaseReference purchaseListRef = database.getReference().child("PurchasesList").child(purchase.getKey());

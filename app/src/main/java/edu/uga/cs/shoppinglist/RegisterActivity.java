@@ -55,53 +55,48 @@ public class RegisterActivity extends AppCompatActivity {
                 password = editTextPassword.getText().toString();
                 conPassword = editTextCon.getText().toString();
 
-                // check if password == conPassword -> if not display error msg
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (!password.equals(conPassword)) {
-                                    Toast.makeText(RegisterActivity.this, "Passwords do not match.",
-                                            Toast.LENGTH_SHORT).show();
-                                } else if (task.isSuccessful()) {
-                                    Toast.makeText(RegisterActivity.this, "Account created.",
-                                            Toast.LENGTH_SHORT).show();
 
-                                    // set user's display name
-                                    FirebaseUser user = mAuth.getCurrentUser();
+                if (!password.equals(conPassword)) {
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterActivity.this, "Account created.", Toast.LENGTH_SHORT).show();
 
-                                    UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
-                                            .setDisplayName(name)
-                                            .build();
-                                    user.updateProfile(profileUpdate)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Log.d(DEBUG_TAG, "User profile updated.");
-                                                    }
-                                                }
-                                            });
-                                    // push name to users list
-                                    db = FirebaseDatabase.getInstance().getReference("Users");
-                                    db.push().setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            Log.d(DEBUG_TAG, "name pushed to DB");
+                                // set user's display name
+                                FirebaseUser user = mAuth.getCurrentUser();
+
+                                UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                                user.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(DEBUG_TAG, "User profile updated.");
                                         }
-                                    });
+                                    }
+                                });
+                                // push name to users list
+                                db = FirebaseDatabase.getInstance().getReference("Users");
+                                db.push().setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Log.d(DEBUG_TAG, "name pushed to DB");
+                                    }
+                                });
 
 
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(DEBUG_TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(RegisterActivity.this, "Error: " +task.getException().getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(DEBUG_TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(RegisterActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        }
+                    });
+                }
             }
         });
     }

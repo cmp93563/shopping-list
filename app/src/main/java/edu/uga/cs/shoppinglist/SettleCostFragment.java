@@ -71,7 +71,7 @@ public class SettleCostFragment extends Fragment {
                     total = total + purchase.getTotal();
                     Log.d(DEBUG_TAG, "total: " + total);
                 }
-                totalCost.setText("$" + total);
+                totalCost.setText("$" + String.format("%.2f",total));
             }
 
             @Override

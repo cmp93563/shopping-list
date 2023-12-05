@@ -37,6 +37,11 @@ public class SettleCostFragment extends Fragment {
     private DatabaseReference dbRef;
     private DatabaseReference dbRef2;
     private ListView listView;
+    private ValueEventListener listener1;
+    private ValueEventListener listener2;
+    private ValueEventListener listener3;
+
+    private boolean settled = false;
 
     public SettleCostFragment() {
         // Required empty public constructor
@@ -59,17 +64,24 @@ public class SettleCostFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         totalCost = getView().findViewById(R.id.textView4);
+        avgCost = getView().findViewById(R.id.textView6);
+        settleBtn = getView().findViewById(R.id.button5);
+        listView = (ListView) getView().findViewById(R.id.listView);
+
 
         dbRef = FirebaseDatabase.getInstance().getReference("PurchasesList");
-        total = 0;
-        dbRef.addValueEventListener(new ValueEventListener() {
+        listener1 =dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Purchase purchase = postSnapshot.getValue(Purchase.class);
-                    purchase.setKey(postSnapshot.getKey());
-                    total = total + purchase.getTotal();
-                    Log.d(DEBUG_TAG, "total: " + total);
+                // only find cost if not in middle of settling
+                if (avgCost.getText().toString().isEmpty()) {
+
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        Purchase purchase = postSnapshot.getValue(Purchase.class);
+                        purchase.setKey(postSnapshot.getKey());
+                        total = total + purchase.getTotal();
+                        Log.d(DEBUG_TAG, "total: " + total);
+                    }
                 }
                 totalCost.setText("$" + String.format("%.2f",total));
             }
@@ -78,21 +90,18 @@ public class SettleCostFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d(DEBUG_TAG, error.getMessage());
             }
-        });
+        }); // val event listener
 
         List<String> roommates = new ArrayList<>();
         List<Double> paid = new ArrayList<>();
 
-        avgCost = getView().findViewById(R.id.textView6);
-        settleBtn = getView().findViewById(R.id.button5);
-        listView = (ListView) getView().findViewById(R.id.listView);
-
         dbRef2 = FirebaseDatabase.getInstance().getReference("Users");
 
         settleBtn.setOnClickListener(v -> {
+            settled = true;
 
             // get user names into list
-            dbRef2.addValueEventListener(new ValueEventListener() {
+            listener2 = dbRef2.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot postSnapshot : snapshot.getChildren()) {
@@ -110,27 +119,41 @@ public class SettleCostFragment extends Fragment {
                     }
 
                     // loop through purchases and find totals per roommate
-                    dbRef.addValueEventListener(new ValueEventListener() {
+                    listener3 = dbRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Log.d(DEBUG_TAG, "in onDataChange for l3");
 
-                            for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                Purchase purchase = postSnapshot.getValue(Purchase.class);
-                                purchase.setKey(postSnapshot.getKey());
+                            boolean allZeroes = true;
+                            for (int i = 0; i < paid.size(); i++) {
+                                if (paid.get(i) != 0.0) {
+                                    allZeroes = false;
+                                }
+                            }
+                            //only do following if all items in paid = 0.0,
+                            if (allZeroes) {
+                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                    Purchase purchase = postSnapshot.getValue(Purchase.class);
+                                    purchase.setKey(postSnapshot.getKey());
 
-                                int index = roommates.indexOf(purchase.getRoommate());
-                                double toAdd = paid.get(index) + purchase.getTotal();
+                                    int index = roommates.indexOf(purchase.getRoommate());
+                                    double toAdd = paid.get(index) + purchase.getTotal();
 
-                                paid.set(index,toAdd);
+                                    paid.set(index, toAdd);
 
-                                // remove purchase from dB
-                                dbRef.child(purchase.getKey()).removeValue();
+                                    // remove purchase from DB
+                                    dbRef.child(purchase.getKey()).removeValue();
+                                }
                             }
 
                             //create new array of strings to be displayed
                             String[] lines = new String[roommates.size()];
                             for (int i = 0; i < roommates.size(); i++) {
-                                String line = roommates.get(i) + " has spent $" + paid.get(i);
+
+                                //TEST
+                                Log.d(DEBUG_TAG, "paid.get(index) = " + paid.get(i));
+
+                                String line = roommates.get(i) + " has spent $" + String.format("%.2f",paid.get(i));
                                 lines[i]=line;
                             }
 
@@ -151,4 +174,16 @@ public class SettleCostFragment extends Fragment {
             });
         });
     } // onViewCreated
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // only remove listeners after purchases have been settled
+        if (settled) {
+            dbRef.removeEventListener(listener1);
+            dbRef2.removeEventListener(listener2);
+            dbRef.removeEventListener(listener3);
+            Log.d(DEBUG_TAG, "event listeners removed");
+        }
+    }
 }

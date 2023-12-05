@@ -91,7 +91,7 @@ public class RecentPurchasesRecyclerAdapter extends RecyclerView.Adapter<RecentP
         String date = purchase.getDate();
         String roommate = purchase.getRoommate();
         holder.purchaseBy.setText( "Purchase by: " + roommate);
-        holder.totalCost.setText( "Total cost: $" + total);
+        holder.totalCost.setText( "Total cost: $" + String.format("%.2f",total));
 
         // use a linear layout manager for the recycler view
         LinearLayoutManager layoutManager

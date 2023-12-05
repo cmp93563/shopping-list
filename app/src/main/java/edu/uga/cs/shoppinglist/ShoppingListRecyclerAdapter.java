@@ -88,6 +88,7 @@ public class ShoppingListRecyclerAdapter
 
         holder.itemName.setText( listItem.getItem());
         if (listItem.getInCart()) holder.checkout.setText("Remove From Cart");
+        else holder.checkout.setText("Add To Cart");
         //change color of button
 
         holder.editBtn.setOnClickListener(new View.OnClickListener() {
